@@ -1,1 +1,5 @@
-json.array! @jobs, partial: 'jobs/job', as: :job
+@jobs.each do |job|
+  json.set! job.id do
+    json.partial! 'job', job: job
+  end
+end

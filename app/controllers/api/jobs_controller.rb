@@ -6,17 +6,22 @@ class Api::JobsController < ApplicationController
   # GET /jobs.json
   def index
     jobs = scrape
-
-    jobs.map! do |job|
+    arr = []
+    debugger
+    jobs.each do |job|
       company = 0
-      if Job.find_by(url: job[:url])
-        Job.find_by(url: job[:url]).update(job)
+      debugger
+      if !(Job.find_by(url: job[:url]).nil?)
+        job.delete(:company)
+        job.delete(:company_url)
+        url = job[:url]
+        job = Job.find_by(url: job[:url]).update(job)
+        job = Job.find_by(url: url)
       else
-        if Company.find_by(url: job[:url])
-          company = Company.find_by(url: job[:url])
+        if !(Company.find_by(name: job[:company]).nil?)
+          company = Company.find_by(name: job[:company])
         else
           company = Company.new({name: job[:company], url: job[:company_url]})
-          debugger
           company.save!
         end
         job[:company_id] = company[:id]
@@ -24,9 +29,12 @@ class Api::JobsController < ApplicationController
         job.delete(:company_url)
         job = Job.new(job)
         job.save!
+        job = Job.all.last
       end
+      arr.push(job)
     end
-    @jobs = jobs
+    @jobs = arr
+    debugger
   end
 
   private
@@ -38,8 +46,6 @@ class Api::JobsController < ApplicationController
 end
 
 def scrape
-  Bitly.use_api_version_3
-  bitly = Bitly.new('imakovoz', 'R_63098aca337046e1a27621bee19ff33c')
   user_name = "shoytempus@gmail.com"
   password = "starwars1"
 
@@ -61,11 +67,11 @@ def scrape
 
   jobs = []
   page = 0
-
+  debugger
   driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=Full%20Stack%20Developer&location=Greater%20New%20York%20City%20Area&locationId=us%3A70"
   wait = Selenium::WebDriver::Wait.new(:timeout => 30)
 
-  while true
+  while page < 1
     page += 1
     container = wait.until { driver.find_elements(css: '.card-list > li') }
     lis = container.dup
@@ -85,8 +91,7 @@ def scrape
       end
       job[:company]= x
       begin
-        x = e.find_elements(css: '.job-card-search__company-name-link')[0].attribute('href')
-        x = bitly.shorten(x).short_url
+        x = e.find_elements(css: '.job-card-search__company-name-link')[0].attribute('href').split('?eBP=')[0]
       rescue
         x = ""
       end
@@ -104,8 +109,7 @@ def scrape
       end
       job[:description]= x
       begin
-        x = e.find_elements(tag_name: 'a')[0].attribute('href')
-        x = bitly.shorten(x).short_url
+        x = e.find_elements(tag_name: 'a')[0].attribute('href').split('?eBP=')[0]
       rescue
         x = ""
       end

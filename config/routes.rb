@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'api/scrape/jobs', to: 'api/jobs#scrape_index', as: 'sjobs', defaults: { format: :json }
+
   namespace :api, defaults: { format: :json } do
     resources :companies, only: [:index, :create, :show, :update]
     resources :jobs, only: [:index, :show, :create, :update]

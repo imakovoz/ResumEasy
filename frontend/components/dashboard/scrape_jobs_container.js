@@ -1,11 +1,10 @@
-import { login, resetErrors } from '../../actions/session_actions';
-import Dashboard from './dashboard';
+import Scrape from './scrape_jobs';
 import { connect } from 'react-redux';
 import { fetchJobs } from '../../actions/job_actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    jobs: state.entities.jobs || {},
+    jobs: _.values(state.entities.jobs) || [],
   };
 };
 
@@ -13,4 +12,4 @@ const mapDispatchToProps = dispatch => ({
   fetchJobs: data => dispatch(fetchJobs(data)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Scrape);

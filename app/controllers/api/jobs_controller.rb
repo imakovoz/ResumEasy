@@ -5,12 +5,13 @@ class Api::JobsController < ApplicationController
   # GET /jobs
   # GET /jobs.json
   def index
-    jobs = scrape
+    location = params[:location].split(" ").join("%20")
+    position = params[:position].split(" ").join("%20")
+    data = {location: location, position: position}
+    jobs = scrape(data)
     arr = []
-    debugger
     jobs.each do |job|
       company = 0
-      debugger
       if !(Job.find_by(url: job[:url]).nil?)
         job.delete(:company)
         job.delete(:company_url)
@@ -34,7 +35,6 @@ class Api::JobsController < ApplicationController
       arr.push(job)
     end
     @jobs = arr
-    debugger
   end
 
   private
@@ -45,7 +45,7 @@ class Api::JobsController < ApplicationController
     end
 end
 
-def scrape
+def scrape(data)
   user_name = "shoytempus@gmail.com"
   password = "starwars1"
 
@@ -64,11 +64,9 @@ def scrape
   element.click()
 
   wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-
   jobs = []
   page = 0
-  debugger
-  driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=Full%20Stack%20Developer&location=Greater%20New%20York%20City%20Area&locationId=us%3A70"
+  driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=#{data[:position]}&location=#{data[:location]}"
   wait = Selenium::WebDriver::Wait.new(:timeout => 30)
 
   while page < 1

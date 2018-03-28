@@ -1,15 +1,11 @@
-import React from "react";
-import { Link, withRouter } from "react-router-dom";
+import React from 'react';
+import { Link, withRouter } from 'react-router-dom';
 
 class Header extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
-
+    this.state = {};
   }
-
 
   render() {
     return (
@@ -19,9 +15,10 @@ class Header extends React.Component {
           <h5>Your best tool for applying to jobs</h5>
         </div>
         <div id="right-nav">
-          <div>Find Jobs</div>
-          <div>Categorize Jobs</div>
-          <div>Apply to Jobs</div>
+          <Link to="/scrape-jobs">Scrape Jobs</Link>
+          <Link to="/find-jobs">Find Jobs</Link>
+          <Link to="/categorize-jobs">Categorize Jobs</Link>
+          <Link to="/apply-jobs">Apply to Jobs</Link>
         </div>
       </nav>
     );

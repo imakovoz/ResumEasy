@@ -1,25 +1,14 @@
-import React from "react";
-import { Link, withRouter } from "react-router-dom";
-import Header from "../header/header_container";
+import React from 'react';
+import { Link, withRouter } from 'react-router-dom';
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
-
+    this.state = {};
   }
 
-
   render() {
-    this.props.fetchJobs();
-    return (
-      <div id="dashboard-wrapper">
-        <Header />
-        <div>123</div>
-      </div>
-    );
+    return <div id="dashboard-wrapper" />;
   }
 }
 

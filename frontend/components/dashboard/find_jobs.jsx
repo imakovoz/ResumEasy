@@ -1,16 +1,14 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
-class ScrapeJobs extends React.Component {
+class FindJobs extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      position: '',
-      location: '',
-    };
     this.table = false;
-    this.handleInput = this.handleInput.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchJobs().then(() => (this.table = true));
   }
 
   componentDidUpdate() {
@@ -18,16 +16,6 @@ class ScrapeJobs extends React.Component {
       $('#scrape-table').DataTable();
       this.table = false;
     }
-  }
-
-  handleInput(e) {
-    const obj = {};
-    obj[e.currentTarget.className] = e.target.value;
-    this.setState(obj);
-  }
-
-  handleSearch() {
-    this.props.scrapeJobs(this.state);
   }
 
   render() {
@@ -59,25 +47,8 @@ class ScrapeJobs extends React.Component {
         </table>
       );
     }
-    return (
-      <div className="search-wrapper">
-        <form>
-          <input
-            onChange={this.handleInput}
-            className="position"
-            placeholder="Search Jobs"
-          />
-          <input
-            onChange={this.handleInput}
-            className="location"
-            placeholder="Search Jobs"
-          />
-          <input onClick={this.handleSearch} type="button" value="Search" />
-        </form>
-        {result}
-      </div>
-    );
+    return <div className="search-wrapper">{result}</div>;
   }
 }
 
-export default withRouter(ScrapeJobs);
+export default withRouter(FindJobs);

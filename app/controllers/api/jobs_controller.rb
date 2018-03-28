@@ -5,6 +5,10 @@ class Api::JobsController < ApplicationController
   # GET /jobs
   # GET /jobs.json
   def index
+    @jobs = Job.all
+  end
+
+  def scrape_index
     location = params[:location].split(" ").join("%20")
     position = params[:position].split(" ").join("%20")
     data = {location: location, position: position}
@@ -35,6 +39,7 @@ class Api::JobsController < ApplicationController
       arr.push(job)
     end
     @jobs = arr
+    render :index
   end
 
   private

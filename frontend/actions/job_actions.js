@@ -11,3 +11,7 @@ export const receiveJobs = jobs => {
 export const fetchJobs = data => dispatch => {
   return APIUtil.fetchJobs(data).then(jobs => dispatch(receiveJobs(jobs)));
 };
+
+export const scrapeJobs = data => dispatch => {
+  return APIUtil.fetchJobs(data).then(jobs => dispatch(receiveJobs(jobs)));
+};

@@ -6,17 +6,24 @@ class Api::JobsController < ApplicationController
   # GET /jobs.json
   def index
     jobs = scrape
-    jobs.map! do |_, job|
-      if Job.find_by(url: job[5])
+
+    jobs.map! do |job|
+      company = 0
+      if Job.find_by(url: job[:url])
         Job.find_by(url: job[:url]).update(job)
       else
         if Company.find_by(url: job[:url])
           company = Company.find_by(url: job[:url])
         else
-          company = Company.new(name: job[:company], url: job[:company_url])
+          company = Company.new({name: job[:company], url: job[:company_url]})
+          debugger
+          company.save!
         end
-        job.company_id = company.id
-        Job.new(job)
+        job[:company_id] = company[:id]
+        job.delete(:company)
+        job.delete(:company_url)
+        job = Job.new(job)
+        job.save!
       end
     end
     @jobs = jobs
@@ -41,7 +48,6 @@ def scrape
 
   wait = Selenium::WebDriver::Wait.new(:timeout => 60)
 
-
   element = driver.find_element(id: 'login-email')
   element.send_keys user_name
 
@@ -50,6 +56,7 @@ def scrape
 
   element = driver.find_element(id: 'login-submit')
   element.click()
+
   wait = Selenium::WebDriver::Wait.new(:timeout => 30)
 
   jobs = []
@@ -57,7 +64,6 @@ def scrape
 
   driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=Full%20Stack%20Developer&location=Greater%20New%20York%20City%20Area&locationId=us%3A70"
   wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-
 
   while true
     page += 1
@@ -71,45 +77,46 @@ def scrape
       rescue
         x = ""
       end
-      job[position]= x
+      job[:position]= x
       begin
         x = e.find_elements(tag_name: 'h4')[0].text
       rescue
         x = ""
       end
-      job[company]= x
+      job[:company]= x
       begin
         x = e.find_elements(css: '.job-card-search__company-name-link')[0].attribute('href')
         x = bitly.shorten(x).short_url
       rescue
         x = ""
       end
-      job[company_url]= x
+      job[:company_url]= x
       begin
         x = e.find_elements(tag_name: 'h5')[0].text[13..-1]
       rescue
         x = ""
       end
-      job[location]= x
+      job[:location]= x
       begin
         x = e.find_elements(tag_name: 'p')[0].text
       rescue
         x = ""
       end
-      job[description]= x
+      job[:description]= x
       begin
         x = e.find_elements(tag_name: 'a')[0].attribute('href')
         x = bitly.shorten(x).short_url
       rescue
         x = ""
       end
-      job[url]= x
+      job[:url]= x
       begin
         x = e.find_elements(css: '.job-card-search__easy-apply-text')[0].text == "Easy Apply"
       rescue
-        x = False
+        x = false
       end
-      job[easy]= x
+      job[:easy]= x
+      jobs.push(job) if job[:position] != "See jobs where you are a top applicant"
     end
 
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
@@ -118,11 +125,11 @@ def scrape
     begin
       next_btn.click()
     rescue
-      driver.quit()
       break
     end
     sleep(1)
     wait = Selenium::WebDriver::Wait.new(:timeout => 30)
   end
+  driver.quit()
   jobs
 end

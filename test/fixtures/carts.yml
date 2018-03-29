@@ -1,11 +1,10 @@
 # == Schema Information
 #
-# Table name: companies
+# Table name: carts
 #
 #  id         :integer          not null, primary key
-#  name       :string
-#  size       :string
-#  url        :string
+#  user_id    :integer          not null
+#  job_id     :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
@@ -13,11 +12,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  size: MyString
-  url: MyString
+  user_id: 1
+  job_id: 1
 
 two:
-  name: MyString
-  size: MyString
-  url: MyString
+  user_id: 1
+  job_id: 1

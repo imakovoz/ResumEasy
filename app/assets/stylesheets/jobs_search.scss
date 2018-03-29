@@ -14,3 +14,9 @@ th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+#result td:last-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

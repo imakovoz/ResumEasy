@@ -1,0 +1,51 @@
+#session-form-wrapper {
+  background-color: #dbdbdb;
+  height: calc(100vh - 51px);
+}
+
+#SessionPageForm {
+  display: flex;
+  justify-content: center;
+}
+
+#SessionForm {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  background-color: white;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+#SessionForm > * {
+  padding: 5px;
+  margin: 10px 20px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+#SessionForm > *:last-child {
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #eaeaea;
+  margin: 0;
+  padding: 15px 25px;
+  border-radius: 0;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#SessionForm > *:last-child > a {
+  margin-left: 4px;
+}
+
+#SessionForm > label {
+  font-size: 20px;
+}
+
+#SessionForm > button {
+  background-color: #1ba174;
+  color: white;
+}

@@ -5,10 +5,14 @@ class FindJobs extends React.Component {
   constructor(props) {
     super(props);
     this.table = false;
+    this.handleApply = this.handleApply.bind(this);
   }
 
   componentDidMount() {
-    this.props.fetchJobs().then(() => (this.table = true));
+    this.props
+      .fetchJobs()
+      .then(() => (this.table = true))
+      .then(() => this.props.fetchCarts());
   }
 
   componentDidUpdate() {
@@ -16,6 +20,12 @@ class FindJobs extends React.Component {
       $('#scrape-table').DataTable();
       this.table = false;
     }
+  }
+
+  handleApply(e) {
+    const obj = {};
+    obj[job_id] = e._targetInst.key;
+    obj[user_id] = this.props.currentUser.id;
   }
 
   render() {
@@ -30,6 +40,7 @@ class FindJobs extends React.Component {
               <th>Location</th>
               <th>URL</th>
               <th>Description</th>
+              <th>Apply?</th>
             </tr>
           </thead>
           <tbody>
@@ -40,6 +51,13 @@ class FindJobs extends React.Component {
                   <td>{job.location}</td>
                   <td>{job.url}</td>
                   <td>{job.description}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      onClick={this.handleApply}
+                      key={job.id}
+                    />
+                  </td>
                 </tr>
               );
             })}

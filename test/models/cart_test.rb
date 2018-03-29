@@ -1,18 +1,17 @@
 # == Schema Information
 #
-# Table name: companies
+# Table name: carts
 #
 #  id         :integer          not null, primary key
-#  name       :string
-#  size       :string
-#  url        :string
+#  user_id    :integer          not null
+#  job_id     :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 
 require 'test_helper'
 
-class CompanyTest < ActiveSupport::TestCase
+class CartTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

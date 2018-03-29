@@ -13,6 +13,10 @@ class ScrapeJobs extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
   }
 
+  componentDidMount() {
+    this.props.clearJobs();
+  }
+
   componentDidUpdate() {
     if (this.table) {
       $('#scrape-table').DataTable();

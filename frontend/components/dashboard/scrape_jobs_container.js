@@ -1,6 +1,6 @@
 import Scrape from './scrape_jobs';
 import { connect } from 'react-redux';
-import { scrapeJobs } from '../../actions/job_actions';
+import { scrapeJobs, clearJobs } from '../../actions/job_actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -10,6 +10,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => ({
   scrapeJobs: data => dispatch(scrapeJobs(data)),
+  clearJobs: () => dispatch(clearJobs()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Scrape);

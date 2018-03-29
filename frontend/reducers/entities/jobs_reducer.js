@@ -1,6 +1,5 @@
 import { merge } from 'lodash';
-import { RECEIVE_JOBS } from "../../actions/job_actions";
-
+import { RECEIVE_JOBS, CLEAR_JOBS } from '../../actions/job_actions';
 
 const jobsReducer = (state = {}, action) => {
   Object.freeze(state);
@@ -8,6 +7,8 @@ const jobsReducer = (state = {}, action) => {
   switch (action.type) {
     case RECEIVE_JOBS:
       return merge({}, state, action.jobs);
+    case CLEAR_JOBS:
+      return {};
     default:
       return state;
   }

@@ -8,7 +8,6 @@ const cartsReducer = (state = {}, action) => {
     case RECEIVE_CARTS:
       return action.carts;
     case RECEIVE_CART:
-      debugger;
       return merge({}, state, { [action.cart.id]: action.cart });
     default:
       return state;

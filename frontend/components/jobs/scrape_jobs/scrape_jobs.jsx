@@ -35,7 +35,21 @@ class ScrapeJobs extends React.Component {
   }
 
   render() {
-    let result = null;
+    let result = (
+      <form>
+        <input
+          onChange={this.handleInput}
+          className="position"
+          placeholder="Search Jobs"
+        />
+        <input
+          onChange={this.handleInput}
+          className="location"
+          placeholder="Search Jobs"
+        />
+        <input onClick={this.handleSearch} type="button" value="Search" />
+      </form>
+    );
     if (this.props.jobs.length > 0) {
       this.table = true;
       result = (
@@ -63,24 +77,7 @@ class ScrapeJobs extends React.Component {
         </table>
       );
     }
-    return (
-      <div className="search-wrapper">
-        <form>
-          <input
-            onChange={this.handleInput}
-            className="position"
-            placeholder="Search Jobs"
-          />
-          <input
-            onChange={this.handleInput}
-            className="location"
-            placeholder="Search Jobs"
-          />
-          <input onClick={this.handleSearch} type="button" value="Search" />
-        </form>
-        {result}
-      </div>
-    );
+    return <div id="search-wrapper">{result}</div>;
   }
 }
 

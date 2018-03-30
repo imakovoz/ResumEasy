@@ -20,4 +20,9 @@ class Job < ApplicationRecord
   has_many :carts
   has_many :users,
     through: :carts
+
+  has_many :applications
+  has_many :user_applications,
+    through: :applications,
+    source: :user
 end

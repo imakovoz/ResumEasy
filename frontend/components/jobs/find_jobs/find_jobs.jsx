@@ -13,8 +13,9 @@ class FindJobs extends React.Component {
   componentDidMount() {
     this.props
       .fetchJobs()
-      .then(() => (this.table = true))
-      .then(() => this.props.fetchCarts());
+      .then(() => this.props.fetchCarts())
+      .then(() => this.props.fetchCompanies())
+      .then(() => (this.table = true));
   }
 
   componentDidUpdate() {
@@ -58,10 +59,11 @@ class FindJobs extends React.Component {
           <thead>
             <tr>
               <th>Position</th>
+              <th>Company</th>
               <th>Location</th>
               <th>URL</th>
               <th>Description</th>
-              <th>Apply?</th>
+              <th>Save?</th>
             </tr>
           </thead>
           <tbody>
@@ -70,6 +72,7 @@ class FindJobs extends React.Component {
                 <JobDisp
                   job={job}
                   cart={this.props.cart}
+                  companies={this.props.companies}
                   addToCart={this.props.addToCart}
                   removeFromCart={this.props.removeFromCart}
                   currentUser={this.props.currentUser}
@@ -81,7 +84,7 @@ class FindJobs extends React.Component {
         </table>
       );
     }
-    return <div className="search-wrapper">{result}</div>;
+    return <div id="find-wrapper">{result}</div>;
   }
 }
 

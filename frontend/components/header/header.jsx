@@ -41,7 +41,6 @@ class Header extends React.Component {
         <div id="right-nav">
           <Link to="/scrape-jobs">Scrape Jobs</Link>
           <Link to="/find-jobs">Find Jobs</Link>
-          <Link to="/categorize-jobs">Categorize Jobs</Link>
           <Link to="/apply-jobs">Apply to Jobs</Link>
           {profile}
         </div>

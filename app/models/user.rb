@@ -22,6 +22,11 @@ class User < ApplicationRecord
   has_many :jobs,
     through: :carts
 
+  has_many :applications
+  has_many :job_applications,
+    through: :applications,
+    source: :job
+
 
   def self.find_by_credentials(username, password)
     user = User.find_by_username(username)

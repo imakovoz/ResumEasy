@@ -1,5 +1,5 @@
 class Api::CartsController < ApplicationController
-  before_action :set_cart, only: [:show, :edit, :update, :destroy]
+  before_action :set_cart, only: [:show, :update, :destroy]
 
   # GET /carts
   # GET /carts.json
@@ -11,16 +11,6 @@ class Api::CartsController < ApplicationController
   # GET /carts/1.json
   def show
   end
-
-  # GET /carts/new
-  def new
-    @cart = Cart.new
-  end
-
-  # GET /carts/1/edit
-  def edit
-  end
-
   # POST /carts
   # POST /carts.json
   def create
@@ -33,15 +23,8 @@ class Api::CartsController < ApplicationController
   # PATCH/PUT /carts/1
   # PATCH/PUT /carts/1.json
   def update
-    respond_to do |format|
-      if @cart.update(cart_params)
-        format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
-        format.json { render :show, status: :ok, location: @cart }
-      else
-        format.html { render :edit }
-        format.json { render json: @cart.errors, status: :unprocessable_entity }
-      end
-    end
+    @cart.update(cart_params)
+    render :show
   end
 
   # DELETE /carts/1

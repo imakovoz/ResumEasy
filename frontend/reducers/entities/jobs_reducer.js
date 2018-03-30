@@ -6,7 +6,7 @@ const jobsReducer = (state = {}, action) => {
 
   switch (action.type) {
     case RECEIVE_JOBS:
-      return merge({}, state, action.jobs);
+      return action.jobs;
     case CLEAR_JOBS:
       return {};
     default:

@@ -1,6 +1,6 @@
 import Scrape from './scrape_jobs';
 import { connect } from 'react-redux';
-import { scrapeJobs, clearJobs } from '../../actions/job_actions';
+import { scrapeJobs, clearJobs } from '../../../actions/job_actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {

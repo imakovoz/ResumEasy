@@ -5,7 +5,11 @@ class Api::JobsController < ApplicationController
   # GET /jobs
   # GET /jobs.json
   def index
-    @jobs = Job.all
+    if params[:type] == "apply"
+      @jobs = current_user.jobs
+    else
+      @jobs = Job.all
+    end
   end
 
   def scrape_index

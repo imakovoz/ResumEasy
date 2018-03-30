@@ -8,10 +8,16 @@ export const addToCart = data => {
   });
 };
 
-export const removeFromCart = (data, id) => {
+export const removeFromCart = id => {
   return $.ajax({
     method: 'DELETE',
     url: `/api/carts/${id}`,
-    data,
+  });
+};
+
+export const fetchCarts = () => {
+  return $.ajax({
+    method: 'GET',
+    url: `/api/carts`,
   });
 };

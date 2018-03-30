@@ -4,7 +4,7 @@ class Api::CartsController < ApplicationController
   # GET /carts
   # GET /carts.json
   def index
-    @carts = Cart.all
+    @carts = current_user.carts
   end
 
   # GET /carts/1
@@ -25,16 +25,9 @@ class Api::CartsController < ApplicationController
   # POST /carts.json
   def create
     @cart = Cart.new(cart_params)
-
-    respond_to do |format|
-      if @cart.save
-        format.html { redirect_to @cart, notice: 'Cart was successfully created.' }
-        format.json { render :show, status: :created, location: @cart }
-      else
-        format.html { render :new }
-        format.json { render json: @cart.errors, status: :unprocessable_entity }
-      end
-    end
+    @cart.user_id = current_user.id
+    @cart.save!
+    render :show
   end
 
   # PATCH/PUT /carts/1
@@ -55,10 +48,9 @@ class Api::CartsController < ApplicationController
   # DELETE /carts/1.json
   def destroy
     @cart.destroy
-    respond_to do |format|
-      format.html { redirect_to carts_url, notice: 'Cart was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    user = User.find(current_user.id)
+    @carts = user.carts
+    render :index
   end
 
   private

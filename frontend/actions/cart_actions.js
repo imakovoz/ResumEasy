@@ -16,7 +16,7 @@ export const fetchCarts = () => dispatch =>
   APIUtil.fetchCarts().then(carts => dispatch(receiveCarts(carts)));
 
 export const addToCart = data => dispatch =>
-  APIUtil.createCart(data).then(cart => dispatch(receiveCart(cart)));
+  APIUtil.addToCart(data).then(cart => dispatch(receiveCart(cart)));
 
 export const removeFromCart = id => dispatch =>
-  APIUtil.updateCart(id).then(carts => dispatch(receiveCarts(carts)));
+  APIUtil.removeFromCart(id).then(carts => dispatch(receiveCarts(carts)));

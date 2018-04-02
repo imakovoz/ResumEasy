@@ -7,7 +7,7 @@ class Api::JobsController < ApplicationController
     if params[:type] == "apply"
       @jobs = current_user.jobs
     else
-      @jobs = Job.all
+      @jobs = Job.where({"easy" => true})
     end
   end
 

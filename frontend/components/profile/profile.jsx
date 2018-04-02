@@ -33,14 +33,15 @@ class Profile extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="profile-wrapper">
         <form id="profile-form">
-          <input type="text" value="Phone Number" />
-          <input type="text" value="Resume Name" />
+          <label>Update Profile</label>
+          <input type="text" placeholder="First Name" id="profile-input" />
+          <input type="text" placeholder="Last Name" id="profile-input" />
+          <input type="text" placeholder="Phone Number" id="profile-input" />
+          <input type="text" placeholder="Resume Name" id="profile-input" />
           <input type="file" onChange={this.updateFile.bind(this)} />
-          <div>
-            <button onClick={this.handleSubmit.bind(this)}>Save</button>
-          </div>
+          <a onClick={this.handleSubmit.bind(this)}>Save</a>
         </form>
       </div>
     );

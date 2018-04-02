@@ -1,6 +1,7 @@
 #profile-wrapper {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 #profile-form {
@@ -8,6 +9,7 @@
   flex-direction: column;
   align-items: center;
   margin-top: 50px;
+  margin-bottom: 50px;
   width: 250px;
   background-color: #3a4973;
   padding: 20px 0;

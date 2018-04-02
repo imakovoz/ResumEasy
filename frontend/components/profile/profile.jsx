@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import JobDisp from './profile_job_disp';
 
 class Profile extends React.Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class Profile extends React.Component {
       .fetchJobs({ type: 'sent' })
       .then(() => this.props.fetchUser(this.props.currentUser.id))
       .then(() => this.props.fetchCompanies())
-      .then(() => this.props.fetchApplications());
+      .then(() => this.props.fetchApplications())
+      .then(() => $('#profile-table').DataTable());
   }
 
   handleInput(e) {
@@ -60,7 +62,10 @@ class Profile extends React.Component {
   }
 
   render() {
-    if (this.props.currentUser.id == this.props.pageId) {
+    if (
+      this.props.currentUser.id == this.props.pageId &&
+      this.props.applications.length > 0
+    ) {
       return (
         <div id="profile-wrapper">
           <form id="profile-form">
@@ -100,6 +105,35 @@ class Profile extends React.Component {
             <input type="file" onChange={this.updateFile.bind(this)} />
             <a onClick={this.handleSubmit.bind(this)}>Save</a>
           </form>
+          <table id="profile-table">
+            <thead>
+              <tr>
+                <th>Position</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>URL</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Apply?</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.props.jobs.map((job, i) => {
+                return (
+                  <JobDisp
+                    job={job}
+                    cart={this.props.cart}
+                    companies={this.props.companies}
+                    applications={this.props.applications}
+                    applyToJob={this.props.applyToJob}
+                    deleteApplication={this.props.deleteApplication}
+                    currentUser={this.props.currentUser}
+                    key={i}
+                  />
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       );
     } else {

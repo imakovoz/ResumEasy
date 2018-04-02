@@ -16,6 +16,9 @@ const mapStateToProps = (state, ownProps) => {
       state.entities.users[state.session.currentUser.id] ||
       state.session.currentUser,
     pageId: ownProps.match.params.id,
+    jobs: _.values(state.entities.jobs) || [],
+    companies: state.entities.companies || {},
+    applications: _.values(state.entities.applications) || [],
   };
 };
 

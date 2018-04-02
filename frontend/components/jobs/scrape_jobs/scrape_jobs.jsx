@@ -36,18 +36,18 @@ class ScrapeJobs extends React.Component {
 
   render() {
     let result = (
-      <form>
+      <form id="scrape-form" onSubmit={this.handleSearch}>
         <input
           onChange={this.handleInput}
           className="position"
-          placeholder="Search Jobs"
+          placeholder="Job Description"
         />
         <input
           onChange={this.handleInput}
           className="location"
-          placeholder="Search Jobs"
+          placeholder="Location"
         />
-        <input onClick={this.handleSearch} type="button" value="Search" />
+        <a onClick={this.handleSearch}>Search</a>
       </form>
     );
     if (this.props.jobs.length > 0) {

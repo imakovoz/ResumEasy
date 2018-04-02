@@ -59,10 +59,10 @@ class SessionForm extends React.Component {
               <label>Sign up</label>
               {errs}
               <input
-                type="text"
+                type="email"
                 value={this.state.username}
                 onChange={this.handleUsername}
-                placeholder="Username"
+                placeholder="Email"
                 className="SessionFormInputs"
               />
               <input

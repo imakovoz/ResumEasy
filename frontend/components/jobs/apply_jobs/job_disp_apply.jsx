@@ -73,6 +73,7 @@ class JobDisp extends React.Component {
               checked={this.props.applications.some(
                 el => el.job_id == this.props.job.id
               )}
+              value={this.props.job.id}
             />
           </td>
         </tr>

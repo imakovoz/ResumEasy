@@ -1,5 +1,4 @@
 require 'selenium-webdriver'
-require 'bitly'
 
 class Api::JobsController < ApplicationController
   # GET /jobs

@@ -8,6 +8,10 @@ class ApplyJobs extends React.Component {
     this.table = false;
   }
 
+  handleSendApp(e) {
+    this.props.apply();
+  }
+
   componentDidMount() {
     this.props
       .fetchJobs({ type: 'apply' })
@@ -18,7 +22,7 @@ class ApplyJobs extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.table) {
+    if (this.table && this.props.applications.length > 0) {
       $('#apply-table').DataTable();
       this.table = false;
     }
@@ -65,7 +69,9 @@ class ApplyJobs extends React.Component {
     return (
       <div id="apply-wrapper">
         <div id="apply-btn-container">
-          <div id="apply-btn">Apply now!</div>
+          <div id="apply-btn" onClick={this.handleSendApp.bind(this)}>
+            Apply now!
+          </div>
         </div>
         {result}
       </div>

@@ -7,6 +7,7 @@ import {
   applyToJob,
   updateApplication,
   deleteApplication,
+  apply,
 } from '../../../actions/application_actions';
 import {
   fetchCarts,
@@ -32,6 +33,7 @@ const mapDispatchToProps = dispatch => ({
   removeFromCart: id => dispatch(removeFromCart(id)),
   fetchApplications: () => dispatch(fetchApplications()),
   applyToJob: data => dispatch(applyToJob(data)),
+  apply: () => dispatch(apply()),
   updateApplication: id => dispatch(updateApplication(id)),
   deleteApplication: id => dispatch(deleteApplication(id)),
 });

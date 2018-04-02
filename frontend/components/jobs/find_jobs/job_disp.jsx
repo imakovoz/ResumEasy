@@ -25,7 +25,6 @@ class JobDisp extends React.Component {
     // debugger;
     let company = <td />;
     if (this.props.companies[this.props.job.company_id]) {
-      debugger;
       company = <td>{this.props.companies[this.props.job.company_id].name}</td>;
     }
     if (this.props.job) {

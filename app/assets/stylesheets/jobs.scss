@@ -19,3 +19,33 @@
   justify-content: center;
   align-items: center;
 }
+
+#scrape-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 50px calc(50% - 150px) calc(100vh - 341px) calc(50% - 150px);
+  background-color: #3a4973;
+  height: 200px;
+  padding: 20px;
+  width: 205px;
+  border-radius: 5px;
+}
+
+#scrape-form > * {
+  width: 195px;
+  line-height: 20px;
+  border-radius: 5px;
+  padding-left: 10px;
+}
+
+#scrape-form > a {
+  width: 172px;
+  background-color: white;
+  padding: 5px 15px;
+  border: 1px solid #515151;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  color: #515151;
+}

@@ -1,5 +1,5 @@
 class Api::CartsController < ApplicationController
-  before_action :set_cart, only: [:show, :update, :destroy]
+  before_action :set_cart, only: [:destroy]
 
   # GET /carts
   # GET /carts.json
@@ -7,12 +7,6 @@ class Api::CartsController < ApplicationController
     @carts = current_user.carts
   end
 
-  # GET /carts/1
-  # GET /carts/1.json
-  def show
-  end
-  # POST /carts
-  # POST /carts.json
   def create
     @cart = Cart.new(cart_params)
     @cart.user_id = current_user.id
@@ -20,15 +14,6 @@ class Api::CartsController < ApplicationController
     render :show
   end
 
-  # PATCH/PUT /carts/1
-  # PATCH/PUT /carts/1.json
-  def update
-    @cart.update(cart_params)
-    render :show
-  end
-
-  # DELETE /carts/1
-  # DELETE /carts/1.json
   def destroy
     @cart.destroy
     user = User.find(current_user.id)

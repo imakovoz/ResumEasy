@@ -29,3 +29,10 @@ export const fetchApplications = () => {
     url: `/api/applications`,
   });
 };
+
+export const apply = () => {
+  return $.ajax({
+    method: 'GET',
+    url: '/api/apply',
+  });
+};

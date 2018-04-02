@@ -17,6 +17,11 @@ export const fetchApplications = () => dispatch =>
     dispatch(receiveApplications(applications))
   );
 
+export const apply = () => dispatch =>
+  APIUtil.apply().then(applications =>
+    dispatch(receiveApplications(applications))
+  );
+
 export const applyToJob = data => dispatch =>
   APIUtil.applyToJob(data).then(application =>
     dispatch(receiveApplication(application))

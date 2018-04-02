@@ -15,7 +15,6 @@ export const fetchUser = id => {
 };
 
 export const updateProfile = (data, id) => {
-  debugger;
   return $.ajax({
     method: 'PATCH',
     url: `/api/users/${id}`,

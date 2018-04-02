@@ -6,6 +6,8 @@ class Api::JobsController < ApplicationController
   def index
     if params[:type] == "apply"
       @jobs = current_user.jobs
+    elsif params[:type] == "sent"
+      @jobs = current_user.job_applications
     else
       @jobs = Job.where({"easy" => true})
     end

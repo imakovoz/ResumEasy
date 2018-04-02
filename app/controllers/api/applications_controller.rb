@@ -25,21 +25,19 @@ class Api::ApplicationsController < ApplicationController
   end
 
   def apply
-    # Dir.mkdir(Rails.root.join('tmp'))
-    open('resumetest.pdf', 'wb') do |file|
+    resumename = User.find(current_user.id).resumename
+    open(resumename + '.pdf', 'wb') do |file|
       file << open(current_user.resume.url).read
     end
-    resume = Rails.root.to_s + '/resumetest.pdf'
-    apps = current_user.applications
+    resume = Rails.root.to_s + "/" + resumename + '.pdf'
+    apps = current_user.applications.where("status = 'unsent'")
     arr = apps.map { |app| [app, Job.find(app.job_id)] }
-    debugger
     arr = applyToJob(arr, resume)
-    debugger
     arr.map do |el|
       job = el[1]
 
     end
-    @applications = arr.map { |el| el[0] }
+    @applications = User.find(current_user.id).applications
     render :index
   end
 
@@ -56,28 +54,16 @@ class Api::ApplicationsController < ApplicationController
 end
 
 def applyToJob(data, resume)
-  user_name = "shoytempus@gmail.com"
-  password = "starwars1"
-  number = "12033215503"
+  number = User.find(current_user.id).phone
 
   driver = Selenium::WebDriver.for :chrome
   driver.navigate.to "https://www.linkedin.com/"
-
+  while driver.current_url[0, 29] != "https://www.linkedin.com/feed"
+    sleep(1)
+  end
   wait = Selenium::WebDriver::Wait.new(:timeout => 60)
 
-  element = driver.find_element(id: 'login-email')
-  element.send_keys user_name
-
-  element = driver.find_element(id: 'login-password')
-  element.send_keys password
-
-
-
-  element = driver.find_element(id: 'login-submit')
-  element.click
-  wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-
-  data.map.with_index do |el, i|
+  result = data.map.with_index do |el, i|
     driver.navigate.to el[1].url
     wait = Selenium::WebDriver::Wait.new(:timeout => 30)
     sleep(2)
@@ -88,12 +74,13 @@ def applyToJob(data, resume)
     phone.send_keys number
     upload = driver.find_element(id: 'file-browse-input')
     upload.send_keys resume
-    debugger
-    # driver.find_elements(css: '.jobs-apply-form__follow-company-label')[0].click()
+    driver.find_elements(css: '.jobs-apply-form__follow-company-label')[0].click()
     wait = Selenium::WebDriver::Wait.new(:timeout => 30)
     @application = Application.find(el[0].id)
-    @application.update(status: "sent")
+    @application.update({status: "sent"})
     el[0] = @application
-    return el
+    el
   end
+  driver.close()
+  return result
 end

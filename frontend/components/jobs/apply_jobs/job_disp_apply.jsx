@@ -18,6 +18,12 @@ class JobDisp extends React.Component {
         }
       });
       this.props.removeFromCart(id);
+      // remove applications if they are unsent and unsaved from cart
+      this.props.applications.forEach(el => {
+        if (el['job_id'] == e._targetInst.key && el['status'] === 'unsent') {
+          this.props.deleteApplication(el['id']);
+        }
+      });
     }
   }
 
@@ -47,7 +53,7 @@ class JobDisp extends React.Component {
     if (this.props.companies[this.props.job.company_id]) {
       company = <td>{this.props.companies[this.props.job.company_id].name}</td>;
     }
-    if (this.props.applications.length > 0) {
+    if (this.props.cart.length > 0) {
       const application = this.props.applications.filter(
         x => x.job_id == this.props.job.id
       )[0];

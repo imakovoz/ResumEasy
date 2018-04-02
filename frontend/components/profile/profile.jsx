@@ -7,17 +7,17 @@ class Profile extends React.Component {
     this.state = {
       resumeUrl: '',
       resumeFile: null,
-      firstname: '',
-      lastname: '',
-      phone: '',
-      resumename: '',
+      firstname: this.props.currentUser.firstname || '',
+      lastname: this.props.currentUser.lastname || '',
+      phone: this.props.currentUser.phone || '',
+      resumename: this.props.currentUser.resumename || '',
     };
     this.handleInput = this.handleInput.bind(this);
   }
 
   componentDidMount() {
     this.props
-      .fetchJobs({ type: 'apply' })
+      .fetchJobs({ type: 'sent' })
       .then(() => this.props.fetchUser(this.props.currentUser.id))
       .then(() => this.props.fetchCompanies())
       .then(() => this.props.fetchApplications());
@@ -50,25 +50,17 @@ class Profile extends React.Component {
       formData.append('user[resume]', file);
       this.props.updateUser(formData, this.props.currentUser.id);
     }
-    const user_prof = {};
-    if (this.state.firstname !== '') {
-      user_prof['firstname'] = this.state.firstname;
-    }
-    if (this.state.lastname !== '') {
-      user_prof['lastname'] = this.state.lastname;
-    }
-    if (this.state.resumename !== '') {
-      user_prof['resumename'] = this.state.resumename;
-    }
-    if (this.state.phone !== '') {
-      user_prof['phone'] = this.state.phone;
-    }
+    const user_prof = {
+      firstname: this.state.firstname,
+      lastname: this.state.lastname,
+      phone: this.state.phone,
+      resumename: this.state.resumename,
+    };
     this.props.updateProfile({ user: user_prof }, this.props.currentUser.id);
   }
 
   render() {
     if (this.props.currentUser.id == this.props.pageId) {
-      debugger;
       return (
         <div id="profile-wrapper">
           <form id="profile-form">
@@ -79,7 +71,7 @@ class Profile extends React.Component {
               id="profile-input"
               onChange={this.handleInput}
               className="firstname"
-              value={this.props.currentUser.firstname}
+              value={this.state.firstname}
             />
             <input
               type="text"
@@ -87,7 +79,7 @@ class Profile extends React.Component {
               id="profile-input"
               onChange={this.handleInput}
               className="lastname"
-              value={this.props.currentUser.lastname}
+              value={this.state.lastname}
             />
             <input
               type="text"
@@ -95,7 +87,7 @@ class Profile extends React.Component {
               id="profile-input"
               onChange={this.handleInput}
               className="phone"
-              value={this.props.currentUser.phone}
+              value={this.state.phone}
             />
             <input
               type="text"
@@ -103,7 +95,7 @@ class Profile extends React.Component {
               id="profile-input"
               onChange={this.handleInput}
               className="resumename"
-              value={this.props.currentUser.resumename}
+              value={this.state.resumename}
             />
             <input type="file" onChange={this.updateFile.bind(this)} />
             <a onClick={this.handleSubmit.bind(this)}>Save</a>

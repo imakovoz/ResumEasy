@@ -2,6 +2,7 @@ import Apply from './apply_jobs';
 import { connect } from 'react-redux';
 import { fetchJobs } from '../../../actions/job_actions';
 import { fetchCompanies } from '../../../actions/company_actions';
+import { fetchUser } from '../../../actions/user_actions';
 import {
   fetchApplications,
   applyToJob,
@@ -17,7 +18,9 @@ import {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: state.session.currentUser,
+    currentUser:
+      state.entities.users[state.session.currentUser.id] ||
+      state.session.currentUser,
     jobs: _.values(state.entities.jobs) || [],
     companies: state.entities.companies || {},
     cart: _.values(state.entities.carts) || [],
@@ -26,6 +29,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
+  fetchUser: id => dispatch(fetchUser(id)),
   fetchJobs: data => dispatch(fetchJobs(data)),
   fetchCompanies: () => dispatch(fetchCompanies()),
   fetchCarts: data => dispatch(fetchCarts(data)),

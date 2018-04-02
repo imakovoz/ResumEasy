@@ -37,7 +37,6 @@ class Api::UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    debugger
     if @user.update(user_params)
       render :show
     else
@@ -68,6 +67,6 @@ class Api::UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:username, :password_digest, :session_token, :password, :resume)
+      params.require(:user).permit(:username, :password_digest, :session_token, :password, :resume, :firstname, :lastname, :resumename, :phone)
     end
 end

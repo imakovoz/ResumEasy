@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180330205712) do
+ActiveRecord::Schema.define(version: 20180402021948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,10 @@ ActiveRecord::Schema.define(version: 20180330205712) do
     t.string "resume_content_type"
     t.integer "resume_file_size"
     t.datetime "resume_updated_at"
+    t.string "firstname"
+    t.string "lastname"
+    t.string "resumename"
+    t.string "phone"
   end
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

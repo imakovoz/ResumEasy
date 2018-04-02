@@ -91,6 +91,9 @@ def applyToJob(data, resume)
     debugger
     # driver.find_elements(css: '.jobs-apply-form__follow-company-label')[0].click()
     wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-    el[0].status = "sent"
+    @application = Application.find(el[0].id)
+    @application.update(status: "sent")
+    el[0] = @application
+    return el
   end
 end

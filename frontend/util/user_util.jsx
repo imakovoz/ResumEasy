@@ -7,15 +7,23 @@ export const fetchUsers = () => {
   });
 };
 
-export const fetchUser = (id) => {
+export const fetchUser = id => {
   return $.ajax({
     method: 'GET',
     url: `/api/users/${id}`,
   });
 };
 
-export const updateUser = (data, id) => {
+export const updateProfile = (data, id) => {
+  debugger;
+  return $.ajax({
+    method: 'PATCH',
+    url: `/api/users/${id}`,
+    data: data,
+  });
+};
 
+export const updateUser = (data, id) => {
   return $.ajax({
     url: `/api/users/${id}`,
     type: 'PATCH',
@@ -25,6 +33,6 @@ export const updateUser = (data, id) => {
     data: data,
     success: function(user) {
       UserActions.receiveUser(user);
-    }
+    },
   });
 };

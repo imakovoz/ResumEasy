@@ -1,16 +1,32 @@
-import { fetchUser, fetchUsers, updateUser } from '../../actions/user_actions';
+import {
+  fetchUser,
+  fetchUsers,
+  updateUser,
+  updateProfile,
+} from '../../actions/user_actions';
 import Profile from './profile';
 import { connect } from 'react-redux';
+import { fetchJobs } from '../../actions/job_actions';
+import { fetchCompanies } from '../../actions/company_actions';
+import { fetchApplications } from '../../actions/application_actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: state.session.currentUser || null,
+    currentUser:
+      state.entities.users[state.session.currentUser.id] ||
+      state.session.currentUser,
+    pageId: ownProps.match.params.id,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     updateUser: (data, id) => dispatch(updateUser(data, id)),
+    fetchUser: id => dispatch(fetchUser(id)),
+    updateProfile: (data, id) => dispatch(updateProfile(data, id)),
+    fetchJobs: data => dispatch(fetchJobs(data)),
+    fetchCompanies: () => dispatch(fetchCompanies()),
+    fetchApplications: () => dispatch(fetchApplications()),
   };
 };
 

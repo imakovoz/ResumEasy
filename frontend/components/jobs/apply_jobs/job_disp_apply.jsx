@@ -47,7 +47,10 @@ class JobDisp extends React.Component {
     if (this.props.companies[this.props.job.company_id]) {
       company = <td>{this.props.companies[this.props.job.company_id].name}</td>;
     }
-    if (this.props.job) {
+    if (this.props.applications.length > 0) {
+      const application = this.props.applications.filter(
+        x => x.job_id == this.props.job.id
+      )[0];
       return (
         <tr id="result" key={this.props.job.id}>
           <td>{this.props.job.position}</td>
@@ -73,11 +76,14 @@ class JobDisp extends React.Component {
               checked={this.props.applications.some(
                 el => el.job_id == this.props.job.id
               )}
+              disabled={application && application.status !== 'unsent'}
               value={this.props.job.id}
             />
           </td>
         </tr>
       );
+    } else {
+      return <div />;
     }
   }
 }

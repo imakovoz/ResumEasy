@@ -22,7 +22,7 @@ class ApplyJobs extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.table && this.props.applications.length > 0) {
+    if (this.table) {
       $('#apply-table').DataTable();
       this.table = false;
     }
@@ -31,7 +31,6 @@ class ApplyJobs extends React.Component {
   render() {
     let result = null;
     if (this.props.jobs.length > 0) {
-      this.table = true;
       result = (
         <table id="apply-table">
           <thead>

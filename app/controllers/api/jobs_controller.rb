@@ -56,7 +56,7 @@ class Api::JobsController < ApplicationController
 end
 
 def scrape(data)
-  chrome_bin = ENV.fetch('GOOGLE_CHROME_BIN', nil)
+  chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
   chrome_opts = chrome_bin ? { "chromeOptions" => { "binary" => chrome_bin } } : {}
   driver = Selenium::WebDriver.for :chrome, options: chrome_opts
   driver.navigate.to "https://www.linkedin.com/"

@@ -61,8 +61,14 @@ def scrape(data)
   # options = Selenium::WebDriver::Chrome::Options.new
   # options.add_argument("chromeOptions" => { "binary" => "/usr/bin/google-chrome" })
   options = Selenium::WebDriver::Chrome::Options.new
-  chrome_bin_path = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
+  # chrome_bin_path = ENV.fetch('GOOGLE_CHROME_SHIM', "~/usr/bin/google-chrome")
+  # chrome_bin_path = "/bin/google-chrome-stable"
+  chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
+  # chrome_bin_path = "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
   options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
+  # debugger
+  # chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"browsers","chromedriver.exe")
+  # Selenium::WebDriver::Chrome.driver_path = chromedriver_path
   driver = Selenium::WebDriver.for :chrome, options: options
   driver.navigate.to "https://www.linkedin.com/"
 

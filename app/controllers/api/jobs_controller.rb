@@ -72,12 +72,25 @@ def scrape(data)
   driver = Selenium::WebDriver.for :chrome, options: options
   driver.navigate.to "https://www.linkedin.com/"
 
-  while driver.current_url[0, 29] != "https://www.linkedin.com/feed"
-    puts "test"
-    sleep(1)
-  end
+
+  user_name = "shoytempus@gmail.com"
+  password = "starwars1"
 
   wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+
+
+  element = driver.find_element(id: 'login-email')
+  element.send_keys user_name
+
+  element = driver.find_element(id: 'login-password')
+  element.send_keys password
+
+  element = driver.find_element(id: 'login-submit')
+  element.click
+
+  wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+  element = driver.find_element(css: '.profile-rail-card__actor-link')
+  puts element.text
 
   jobs = []
   page = 0

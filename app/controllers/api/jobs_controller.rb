@@ -73,6 +73,7 @@ def scrape(data)
   driver.navigate.to "https://www.linkedin.com/"
 
   while driver.current_url[0, 29] != "https://www.linkedin.com/feed"
+    puts "test"
     sleep(1)
   end
 

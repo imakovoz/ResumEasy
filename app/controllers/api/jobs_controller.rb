@@ -1,4 +1,4 @@
-require 'selenium-webdriver'
+
 
 class Api::JobsController < ApplicationController
   # GET /jobs

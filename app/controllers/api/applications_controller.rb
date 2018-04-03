@@ -1,4 +1,4 @@
-require 'selenium-webdriver'
+
 require 'open-uri'
 
 class Api::ApplicationsController < ApplicationController

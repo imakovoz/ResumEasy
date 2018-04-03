@@ -56,12 +56,14 @@ class Api::JobsController < ApplicationController
 end
 
 def scrape(data)
-  chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
+  # chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
   # chrome_opts = chrome_bin ? { "chromeOptions" => { "binary" => chrome_bin } } : {}
   # options = Selenium::WebDriver::Chrome::Options.new
   # options.add_argument("chromeOptions" => { "binary" => "/usr/bin/google-chrome" })
-  Selenium::WebDriver::Chrome.driver_path="/app/.apt/usr/bin/google-chrome"
-  driver = Selenium::WebDriver.for :chrome
+  options = Selenium::WebDriver::Chrome::Options.new
+  chrome_bin_path = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
+  options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
+  driver = Selenium::WebDriver.for :chrome, options: options
   driver.navigate.to "https://www.linkedin.com/"
 
   while driver.current_url[0, 29] != "https://www.linkedin.com/feed"

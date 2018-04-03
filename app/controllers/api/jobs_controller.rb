@@ -57,8 +57,11 @@ end
 
 def scrape(data)
   chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
-  chrome_opts = chrome_bin ? { "chromeOptions" => { "binary" => chrome_bin } } : {}
-  driver = Selenium::WebDriver.for :chrome, options: chrome_opts
+  # chrome_opts = chrome_bin ? { "chromeOptions" => { "binary" => chrome_bin } } : {}
+  # options = Selenium::WebDriver::Chrome::Options.new
+  # options.add_argument("chromeOptions" => { "binary" => "/usr/bin/google-chrome" })
+  Selenium::WebDriver::Chrome.driver_path="/app/.apt/usr/bin/google-chrome"
+  driver = Selenium::WebDriver.for :chrome
   driver.navigate.to "https://www.linkedin.com/"
 
   while driver.current_url[0, 29] != "https://www.linkedin.com/feed"

@@ -1,4 +1,4 @@
-
+require 'selenium-webdriver'
 
 class Api::JobsController < ApplicationController
   # GET /jobs
@@ -56,11 +56,9 @@ class Api::JobsController < ApplicationController
 end
 
 def scrape(data)
-  driver = Selenium::Driver.new(
-     app,
-     browser: :chrome,
-     desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(chrome_opts)
-  )
+  chrome_bin = ENV.fetch('GOOGLE_CHROME_BIN', nil)
+  chrome_opts = chrome_bin ? { "chromeOptions" => { "binary" => chrome_bin } } : {}
+  driver = Selenium::WebDriver.for :chrome, options: chrome_opts
   driver.navigate.to "https://www.linkedin.com/"
 
   while driver.current_url[0, 29] != "https://www.linkedin.com/feed"

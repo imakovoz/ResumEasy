@@ -89,8 +89,7 @@ def scrape(data)
   element.click
 
   wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-  element = driver.find_element(css: '.profile-rail-card__actor-link')
-  puts element.text
+  puts driver.current_url
 
   jobs = []
   page = 0

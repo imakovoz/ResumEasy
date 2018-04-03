@@ -56,30 +56,21 @@ class Api::JobsController < ApplicationController
 end
 
 def scrape(data)
-  user_name = "shoytempus@gmail.com"
-  password = "starwars1"
-
   driver = Selenium::WebDriver.for :chrome
   driver.navigate.to "https://www.linkedin.com/"
 
+  while driver.current_url[0, 29] != "https://www.linkedin.com/feed"
+    sleep(1)
+  end
+
   wait = Selenium::WebDriver::Wait.new(:timeout => 60)
 
-  element = driver.find_element(id: 'login-email')
-  element.send_keys user_name
-
-  element = driver.find_element(id: 'login-password')
-  element.send_keys password
-
-  element = driver.find_element(id: 'login-submit')
-  element.click()
-
-  wait = Selenium::WebDriver::Wait.new(:timeout => 30)
   jobs = []
   page = 0
   driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=#{data[:position]}&location=#{data[:location]}"
   wait = Selenium::WebDriver::Wait.new(:timeout => 30)
 
-  while page < 1
+  while true
     page += 1
     container = wait.until { driver.find_elements(css: '.card-list > li') }
     lis = container.dup

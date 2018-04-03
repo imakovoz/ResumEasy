@@ -30,6 +30,7 @@ class JobDisp extends React.Component {
     }
     let status = <td />;
     if (this.props.applications.length > 0) {
+      debugger;
       status = (
         <td>
           {

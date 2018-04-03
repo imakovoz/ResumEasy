@@ -56,7 +56,11 @@ class Api::JobsController < ApplicationController
 end
 
 def scrape(data)
-  driver = Selenium::WebDriver.for :chrome
+  driver = Selenium::Driver.new(
+     app,
+     browser: :chrome,
+     desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(chrome_opts)
+  )
   driver.navigate.to "https://www.linkedin.com/"
 
   while driver.current_url[0, 29] != "https://www.linkedin.com/feed"

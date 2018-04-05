@@ -29,7 +29,17 @@ class Api::CartsController < ApplicationController
     @carts = []
     result.each.with_index do |el, i|
       cart = params[:carts][i.to_s]
-      Cart.find(cart[:id]).update({category: (el.each_with_index.max[1] + 1).to_s})
+      category = 0
+      if el[0].is_a? Float
+        max = el[0]
+        el.each.with_index do |e, j|
+          if e > max
+            category = j + 1
+            max = e
+          end
+        end
+      end
+      Cart.find(cart[:id]).update({category: category.to_s})
       cart = Cart.find(cart[:id])
       @carts.push(cart)
     end
@@ -82,8 +92,9 @@ def fetchDescriptions(cart)
         desc.push("")
       end
     end
-    cart[i.to_s][:description] = desc.join(' ').gsub(/[^A-Za-z ]/, ' ').gsub(/\s+/, ' ').downcase
-    
+    description = desc.join(' ').gsub(/[^A-Za-z ]/, ' ').gsub(/\s+/, ' ').downcase
+    cart[i.to_s][:description] = description
+    Job.find(cart[i.to_s][:job_id]).update({description: description})
   end
   driver.quit()
   return cart

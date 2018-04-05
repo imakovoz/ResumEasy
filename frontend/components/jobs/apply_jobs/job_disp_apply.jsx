@@ -64,14 +64,14 @@ class JobDisp extends React.Component {
         x => x.job_id == this.props.job.id
       )[0];
       this.cart = this.props.cart.filter(x => x.job_id == this.props.job.id)[0];
-      debugger;
-      let category = <td>{this.cart.category}</td>;
+      let category = <td>0</td>;
+      let d_val = 0;
+      if (this.cart) {
+        d_val = this.cart.category;
+      }
       category = (
         <td>
-          <select
-            defaultValue={this.cart.category}
-            onChange={this.handleCat.bind(this)}
-          >
+          <select defaultValue={d_val} onChange={this.handleCat.bind(this)}>
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -87,7 +87,7 @@ class JobDisp extends React.Component {
           {company}
           <td>{this.props.job.location}</td>
           <td>{this.props.job.url}</td>
-          <td>{this.props.job.description}</td>
+          <td>{this.props.job.description.substring(0, 200) + '...'}</td>
           {category}
           <td>
             <input

@@ -34,7 +34,7 @@ class JobDisp extends React.Component {
           {company}
           <td>{this.props.job.location}</td>
           <td>{this.props.job.url}</td>
-          <td>{this.props.job.description}</td>
+          <td>{this.props.job.description.substring(0, 200) + '...'}</td>
           <td className="checkbox-input">
             <input
               type="checkbox"

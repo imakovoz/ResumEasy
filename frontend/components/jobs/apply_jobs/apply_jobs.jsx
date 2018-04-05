@@ -26,7 +26,6 @@ class ApplyJobs extends React.Component {
 
     this.props.cart.forEach(cart => {
       let job = this.props.jobs_obj[cart.job_id];
-      cart.description = job.description;
       cart.url = job.url;
       carts.push(cart);
     });

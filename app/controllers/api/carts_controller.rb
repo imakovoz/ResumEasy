@@ -30,8 +30,8 @@ class Api::CartsController < ApplicationController
     result.each.with_index do |el, i|
       cart = params[:carts][i.to_s]
       category = 0
-      if el[0].is_a? Float
-        max = el[0]
+      if (el[0].is_a? Float) || (el[0].is_a? Integer)
+        max = -999999999
         el.each.with_index do |e, j|
           if e > max
             category = j + 1
@@ -80,11 +80,13 @@ def fetchDescriptions(cart)
     view_more = driver.find_elements(css: '.view-more-icon')[0]
     begin
       view_more.click()
+      sleep(1)
     rescue
 
     end
     desc_container = driver.find_elements(css: '#job-details *')
     desc = []
+    desc_container = [driver.find_element(css: '#job-details')] if driver.find_element(css: '#job-details').text.length > 100
     desc_container.each do |e|
       begin
         desc.push(e.text)
@@ -94,7 +96,9 @@ def fetchDescriptions(cart)
     end
     description = desc.join(' ').gsub(/[^A-Za-z ]/, ' ').gsub(/\s+/, ' ').downcase
     cart[i.to_s][:description] = description
-    Job.find(cart[i.to_s][:job_id]).update({description: description})
+    if description.length > 200
+      Job.find(cart[i.to_s][:job_id]).update({description: description})
+    end
   end
   driver.quit()
   return cart

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180402021948) do
+ActiveRecord::Schema.define(version: 20180404174802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20180402021948) do
     t.integer "job_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "category", default: "1"
     t.index ["user_id", "job_id"], name: "index_carts_on_user_id_and_job_id", unique: true
   end
 

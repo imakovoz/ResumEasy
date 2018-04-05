@@ -21,6 +21,19 @@ class ApplyJobs extends React.Component {
     }
   }
 
+  handleSort(e) {
+    const carts = [];
+
+    this.props.cart.forEach(cart => {
+      let job = this.props.jobs_obj[cart.job_id];
+      cart.description = job.description;
+      cart.url = job.url;
+      carts.push(cart);
+    });
+
+    this.props.categorizeCarts({ carts });
+  }
+
   componentDidMount() {
     this.props
       .fetchJobs({ type: 'apply' })
@@ -43,6 +56,7 @@ class ApplyJobs extends React.Component {
               <th>Location</th>
               <th>URL</th>
               <th>Description</th>
+              <th>Category</th>
               <th>Save?</th>
               <th>Apply?</th>
             </tr>
@@ -56,6 +70,8 @@ class ApplyJobs extends React.Component {
                   companies={this.props.companies}
                   applications={this.props.applications}
                   addToCart={this.props.addToCart}
+                  updateCart={this.props.updateCart}
+                  categorizeCarts={this.props.categorizeCarts}
                   removeFromCart={this.props.removeFromCart}
                   applyToJob={this.props.applyToJob}
                   deleteApplication={this.props.deleteApplication}
@@ -71,6 +87,9 @@ class ApplyJobs extends React.Component {
     return (
       <div id="apply-wrapper">
         <div id="apply-btn-container">
+          <div id="sort-btn" onClick={this.handleSort.bind(this)}>
+            Sort jobs
+          </div>
           <div id="apply-btn" onClick={this.handleSendApp.bind(this)}>
             Apply now!
           </div>

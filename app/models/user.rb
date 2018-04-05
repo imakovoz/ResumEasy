@@ -12,6 +12,10 @@
 #  resume_content_type :string
 #  resume_file_size    :integer
 #  resume_updated_at   :datetime
+#  firstname           :string
+#  lastname            :string
+#  resumename          :string
+#  phone               :string
 #
 
 class User < ApplicationRecord

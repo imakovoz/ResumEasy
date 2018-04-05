@@ -15,3 +15,11 @@ export const fetchJobs = data => {
     data,
   });
 };
+
+export const updateJob = (data, id) => {
+  return $.ajax({
+    method: 'PATCH',
+    url: `/api/jobs/${id}`,
+    data: data,
+  });
+};

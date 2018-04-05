@@ -33,6 +33,7 @@ gem 'paperclip', '~> 5.0.0'
 gem 'figaro'
 gem 'aws-sdk', '< 3.0'
 gem 'selenium-webdriver'
+gem 'lda-ruby'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

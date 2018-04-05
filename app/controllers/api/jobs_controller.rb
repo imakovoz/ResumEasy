@@ -1,6 +1,7 @@
 require 'selenium-webdriver'
 
 class Api::JobsController < ApplicationController
+  before_action :set_job, only: [:update]
   # GET /jobs
   # GET /jobs.json
   def index
@@ -10,6 +11,14 @@ class Api::JobsController < ApplicationController
       @jobs = current_user.job_applications
     else
       @jobs = Job.where({"easy" => true})
+    end
+  end
+
+  def update
+    if @job.update(job_params)
+      render :show
+    else
+      render json: @job.errors.full_messages, status: 422
     end
   end
 
@@ -49,9 +58,12 @@ class Api::JobsController < ApplicationController
 
   private
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    def set_job
+      @job = Job.find(params[:id])
+    end
+
     def job_params
-      params.require(:job).permit(:position, :company_id, :location, :description, :url, :easy)
+      params.require(:job).permit(:position, :company_id, :location, :description, :url, :easy, :category)
     end
 end
 
@@ -69,27 +81,34 @@ def scrape(data)
   # debugger
   # chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"browsers","chromedriver.exe")
   # Selenium::WebDriver::Chrome.driver_path = chromedriver_path
-  driver = Selenium::WebDriver.for :chrome, options: options
+  # driver = Selenium::WebDriver.for :chrome, options: options
+  # driver.navigate.to "https://www.linkedin.com/"
+
+
+  # user_name = "shoytempus@gmail.com"
+  # password = "starwars1"
+  #
+  # wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+  #
+  # 
+  # element = driver.find_element(id: 'login-email')
+  # element.send_keys user_name
+  #
+  # element = driver.find_element(id: 'login-password')
+  # element.send_keys password
+  #
+  # element = driver.find_element(id: 'login-submit')
+  # element.click
+  #
+  # wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+  # puts driver.current_url
+
+  driver = Selenium::WebDriver.for :chrome
   driver.navigate.to "https://www.linkedin.com/"
-
-
-  user_name = "shoytempus@gmail.com"
-  password = "starwars1"
-
+  while driver.current_url[0, 29] != "https://www.linkedin.com/feed"
+    sleep(1)
+  end
   wait = Selenium::WebDriver::Wait.new(:timeout => 60)
-
-
-  element = driver.find_element(id: 'login-email')
-  element.send_keys user_name
-
-  element = driver.find_element(id: 'login-password')
-  element.send_keys password
-
-  element = driver.find_element(id: 'login-submit')
-  element.click
-
-  wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-  puts driver.current_url
 
   jobs = []
   page = 0

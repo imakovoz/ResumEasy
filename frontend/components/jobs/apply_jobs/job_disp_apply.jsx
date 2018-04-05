@@ -7,6 +7,7 @@ class JobDisp extends React.Component {
       const obj = {};
       obj['job_id'] = e._targetInst.key;
       obj['user_id'] = this.props.currentUser.id;
+      obj['category'] = '0';
       const cart = {};
       cart['cart'] = obj;
       this.props.addToCart(cart);
@@ -25,6 +26,11 @@ class JobDisp extends React.Component {
         }
       });
     }
+  }
+
+  handleCat(e) {
+    this.cart.category = e.target.value;
+    this.props.updateCart({ cart: this.cart }, this.cart.id);
   }
 
   handleApply(e) {
@@ -54,9 +60,27 @@ class JobDisp extends React.Component {
       company = <td>{this.props.companies[this.props.job.company_id].name}</td>;
     }
     if (this.props.cart.length > 0) {
-      const application = this.props.applications.filter(
+      this.application = this.props.applications.filter(
         x => x.job_id == this.props.job.id
       )[0];
+      this.cart = this.props.cart.filter(x => x.job_id == this.props.job.id)[0];
+      debugger;
+      let category = <td>{this.cart.category}</td>;
+      category = (
+        <td>
+          <select
+            defaultValue={this.cart.category}
+            onChange={this.handleCat.bind(this)}
+          >
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </td>
+      );
       return (
         <tr id="result" key={this.props.job.id}>
           <td>{this.props.job.position}</td>
@@ -64,6 +88,7 @@ class JobDisp extends React.Component {
           <td>{this.props.job.location}</td>
           <td>{this.props.job.url}</td>
           <td>{this.props.job.description}</td>
+          {category}
           <td>
             <input
               type="checkbox"
@@ -82,7 +107,9 @@ class JobDisp extends React.Component {
               checked={this.props.applications.some(
                 el => el.job_id == this.props.job.id
               )}
-              disabled={application && application.status !== 'unsent'}
+              disabled={
+                this.application && this.application.status !== 'unsent'
+              }
               value={this.props.job.id}
             />
           </td>

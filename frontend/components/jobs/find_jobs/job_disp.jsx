@@ -7,6 +7,7 @@ class JobDisp extends React.Component {
       const obj = {};
       obj['job_id'] = e._targetInst.key;
       obj['user_id'] = this.props.currentUser.id;
+      obj['category'] = '0';
       const cart = {};
       cart['cart'] = obj;
       this.props.addToCart(cart);

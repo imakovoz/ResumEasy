@@ -21,3 +21,19 @@ export const fetchCarts = () => {
     url: `/api/carts`,
   });
 };
+
+export const updateCart = (data, id) => {
+  return $.ajax({
+    method: 'PATCH',
+    url: `/api/carts/${id}`,
+    data: data,
+  });
+};
+
+export const categorizeCarts = data => {
+  return $.ajax({
+    method: 'GET',
+    url: `/api/categorize`,
+    data,
+  });
+};

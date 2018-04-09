@@ -30,6 +30,7 @@ class JobDisp extends React.Component {
 
   handleCat(e) {
     this.cart.category = e.target.value;
+    // this.setState({ cat: e.target.value });
     this.props.updateCart({ cart: this.cart }, this.cart.id);
   }
 

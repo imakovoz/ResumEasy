@@ -127,6 +127,8 @@ class Profile extends React.Component {
                     applications={this.props.applications}
                     applyToJob={this.props.applyToJob}
                     deleteApplication={this.props.deleteApplication}
+                    updateApplication={this.props.updateApplication}
+                    applyToJob={this.props.applyToJob}
                     currentUser={this.props.currentUser}
                     key={i}
                   />

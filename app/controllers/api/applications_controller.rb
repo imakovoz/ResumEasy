@@ -4,8 +4,6 @@ require 'open-uri'
 class Api::ApplicationsController < ApplicationController
   before_action :set_application, only: [:destroy]
 
-  # GET /applications
-  # GET /applications.json
   def index
     @applications = current_user.applications
   end
@@ -42,12 +40,10 @@ class Api::ApplicationsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_application
       @application = Application.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def application_params
       params.require(:application).permit(:user_id, :job_id, :status)
     end

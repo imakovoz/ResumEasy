@@ -3,6 +3,13 @@ import { Link, withRouter } from 'react-router-dom';
 import JobDisp from './job_disp_apply';
 
 class ApplyJobs extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      key: 1,
+    };
+  }
+
   handleSendApp(e) {
     if (
       this.props.applications.filter(app => app.status === 'unsent').length > 0
@@ -30,7 +37,10 @@ class ApplyJobs extends React.Component {
       carts.push(cart);
     });
 
-    this.props.categorizeCarts({ carts });
+    this.props
+      .categorizeCarts({ carts })
+      .then(() => this.setState({ key: (this.state.key += 1) }))
+      .then(() => $('#apply-table').DataTable());
   }
 
   componentDidMount() {
@@ -84,7 +94,7 @@ class ApplyJobs extends React.Component {
       );
     }
     return (
-      <div id="apply-wrapper">
+      <div id="apply-wrapper" key={this.state.key}>
         <div id="apply-btn-container">
           <div id="sort-btn" onClick={this.handleSort.bind(this)}>
             Sort jobs

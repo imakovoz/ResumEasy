@@ -8,7 +8,12 @@ import Profile from './profile';
 import { connect } from 'react-redux';
 import { fetchJobs } from '../../actions/job_actions';
 import { fetchCompanies } from '../../actions/company_actions';
-import { fetchApplications } from '../../actions/application_actions';
+import {
+  fetchApplications,
+  updateApplication,
+  deleteApplication,
+  applyToJob,
+} from '../../actions/application_actions';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -30,6 +35,9 @@ const mapDispatchToProps = dispatch => {
     fetchJobs: data => dispatch(fetchJobs(data)),
     fetchCompanies: () => dispatch(fetchCompanies()),
     fetchApplications: () => dispatch(fetchApplications()),
+    updateApplication: id => dispatch(updateApplication(id)),
+    deleteApplication: id => dispatch(deleteApplication(id)),
+    applyToJob: data => dispatch(applyToJob(data)),
   };
 };
 

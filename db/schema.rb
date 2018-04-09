@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180404174802) do
+ActiveRecord::Schema.define(version: 20180409181427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,6 +106,10 @@ ActiveRecord::Schema.define(version: 20180404174802) do
     t.string "lastname"
     t.string "resumename"
     t.string "phone"
+    t.string "screenshot_file_name"
+    t.string "screenshot_content_type"
+    t.integer "screenshot_file_size"
+    t.datetime "screenshot_updated_at"
   end
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

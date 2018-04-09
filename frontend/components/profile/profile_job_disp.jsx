@@ -29,8 +29,10 @@ class JobDisp extends React.Component {
       company = <td>{this.props.companies[this.props.job.company_id].name}</td>;
     }
     let status = <td />;
-    if (this.props.applications.length > 0) {
-      debugger;
+    if (
+      this.props.applications.filter(app => app.job_id == this.props.job.id)
+        .length > 0
+    ) {
       status = (
         <td>
           {
@@ -51,7 +53,7 @@ class JobDisp extends React.Component {
           {company}
           <td>{this.props.job.location}</td>
           <td>{this.props.job.url}</td>
-          <td>{this.props.job.description}</td>
+          <td>{this.props.job.description.substring(0, 200) + '...'}</td>
           {status}
           <td>
             <input

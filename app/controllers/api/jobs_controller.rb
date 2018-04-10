@@ -145,6 +145,7 @@ class LinkedinAuth
 
     while true
       page += 1
+      puts page
       container = wait.until { @driver.find_elements(css: '.card-list > li') }
       lis = container.dup
       container.map{|e| e.location_once_scrolled_into_view}

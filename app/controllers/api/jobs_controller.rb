@@ -27,7 +27,7 @@ class Api::JobsController < ApplicationController
 
   def li_login
     if $driver
-      puts @driver.current_url
+      puts $driver.current_url
       render json: {status: 'true'}
     elsif params[:status] == 'false'
       $driver = LinkedinAuth.new

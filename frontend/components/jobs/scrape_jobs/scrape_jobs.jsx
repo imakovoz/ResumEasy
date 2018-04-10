@@ -79,10 +79,10 @@ class ScrapeJobs extends React.Component {
   }
 
   render() {
-    let screenshot = null;
-    if (this.props.screenshot) {
-      screenshot = <img src={this.props.screenshot} id="screenshot" />;
-    }
+    // let screenshot = null;
+    // if (this.props.screenshot) {
+    //   screenshot = <img src={this.props.screenshot} id="screenshot" />;
+    // }
 
     let result = (
       <section>

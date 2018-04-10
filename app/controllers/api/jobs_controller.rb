@@ -32,9 +32,9 @@ class Api::JobsController < ApplicationController
       $driver = LinkedinAuth.new
       screenshot, status = $driver.signin(params[:username], params[:password])
       # screenshot, driver, status = linkedin_login(params[:username], params[:password], params[:driver])
-      screenshot = File.open(screenshot)
-      User.find(current_user.id).update({screenshot: screenshot})
-      render json: {screenshot: current_user.screenshot.url, status: status}
+      # screenshot = File.open(screenshot)
+      # User.find(current_user.id).update({screenshot: screenshot})
+      render json: {status: status}
     elsif params[:status] == 'email'
       $driver.email(params[:code])
       render json: {url: $driver.current_url}
@@ -92,7 +92,6 @@ class LinkedinAuth
   attr_accessor :driver
 
   def initialize
-    puts "heroku test"
     options = Selenium::WebDriver::Chrome::Options.new
     chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
     options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
@@ -111,6 +110,7 @@ class LinkedinAuth
     element = @driver.find_element(id: 'login-submit')
     element.click
     wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+    puts @driver.current_url
     if @driver.current_url[0, 29] == "https://www.linkedin.com/feed"
       status = "true"
     elsif @driver.current_url == "https://www.linkedin.com/uas/consumer-email-challenge"

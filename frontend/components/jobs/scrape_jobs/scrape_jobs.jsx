@@ -99,7 +99,6 @@ class ScrapeJobs extends React.Component {
           />
           <a onClick={this.handleSearch}>Search</a>
         </form>
-        {screenshot}
       </section>
     );
 

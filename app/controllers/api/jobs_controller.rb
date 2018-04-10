@@ -2,6 +2,11 @@ require 'selenium-webdriver'
 
 class Api::JobsController < ApplicationController
   before_action :set_job, only: [:update]
+
+  def initialize
+    @driver = nil
+  end
+
   def index
     if params[:type] == "apply"
       @jobs = current_user.jobs
@@ -21,15 +26,23 @@ class Api::JobsController < ApplicationController
   end
 
   def li_login
-    screenshot, driver = linkedin_login
-    User.find(current_user.id).update({screenshot: screenshot})
-    render json: {screenshot: screenshot, driver: driver}
+    if params[:driver] == '0'
+      $driver = LinkedinAuth.new
+      screenshot, driver, status = $driver.signin(params[:username], params[:password])
+      # screenshot, driver, status = linkedin_login(params[:username], params[:password], params[:driver])
+      screenshot = File.open(screenshot)
+      User.find(current_user.id).update({screenshot: screenshot})
+      render json: {screenshot: current_user.screenshot.url, driver: "1234", status: status }
+    else
+      debugger
+      $driver.reopen
+    end
   end
 
   def scrape_index
     location = params[:location].split(" ").join("%20")
     position = params[:position].split(" ").join("%20")
-    data = {location: location, position: position}
+    data = {location: location, position: position, driver: params[:driver]}
     jobs = scrape(data)
     arr = []
     jobs.each do |job|
@@ -71,14 +84,67 @@ class Api::JobsController < ApplicationController
     end
 end
 
-def linkedin_login
-  options = Selenium::WebDriver::Chrome::Options.new
-  chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
-  options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
+class LinkedinAuth
+  def initialize
+    options = Selenium::WebDriver::Chrome::Options.new
+    chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
+    options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
+    @driver = Selenium::WebDriver.for :chrome
+  end
 
-  driver = Selenium::WebDriver.for :chrome
+  def signin(username, password)
+    @driver.navigate.to "https://www.linkedin.com/"
+    wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+    element = @driver.find_element(id: 'login-email')
+    element.send_keys username
+
+    element = @driver.find_element(id: 'login-password')
+    element.send_keys password
+
+    element = @driver.find_element(id: 'login-submit')
+    element.click
+    wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+    status = (@driver.current_url[0, 29] == "https://www.linkedin.com/feed")
+
+    return [@driver.save_screenshot('screenshot.png'), @driver, status]
+  end
+
+  def info
+    return [@driver.save_screenshot('screenshot.png'), @driver, status]
+  end
+
+  def reopen
+    @driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=developer"
+    debugger
+  end
+end
+
+def linkedin_login(username, password, driver)
+  if driver == "0"
+    options = Selenium::WebDriver::Chrome::Options.new
+    chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
+    options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
+    driver = Selenium::WebDriver.for :chrome
+  else
+    options = Selenium::WebDriver::Chrome::Options.new
+    debugger
+    driver = Selenium::WebDriver.for(:remote, :desired_capabilities => {session_id: driver})
+    debugger
+  end
   driver.navigate.to "https://www.linkedin.com/"
-  return [driver.save_screenshot('screenshot.png'), driver]
+  wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+  element = driver.find_element(id: 'login-email')
+  element.send_keys username
+
+  element = driver.find_element(id: 'login-password')
+  element.send_keys password
+
+  element = driver.find_element(id: 'login-submit')
+  element.click
+  wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+  status = (driver.current_url[0, 29] == "https://www.linkedin.com/feed")
+
+  return [driver.save_screenshot('screenshot.png'), driver, status]
 end
 
 def scrape(data)
@@ -113,9 +179,9 @@ def scrape(data)
   #
   # wait = Selenium::WebDriver::Wait.new(:timeout => 30)
   # puts driver.current_url
-  options = Selenium::WebDriver::Chrome::Options.new
-  chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
-  options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
+  # options = Selenium::WebDriver::Chrome::Options.new
+  # chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
+  # options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
 
   driver = Selenium::WebDriver.for :chrome
   driver.navigate.to "https://www.linkedin.com/"

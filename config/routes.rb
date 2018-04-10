@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   get 'api/scrape/jobs', to: 'api/jobs#scrape_index', as: 'sjobs', defaults: { format: :json }
+  get 'api/auth/linkedin', to: 'api/jobs#li_login', as: 'liauth', defaults: { format: :json }
   get 'api/apply', to: 'api/applications#apply', as: 'apply', defaults: { format: :json }
   get 'api/categorize', to: 'api/carts#sort', as: 'sort', defaults: { format: :json }
 

@@ -25,7 +25,7 @@ class User < ApplicationRecord
   has_attached_file :resume
   validates_attachment :resume, :content_type => { :content_type => %w(application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document) }
   has_attached_file :screenshot, default_url: lambda { |image| ActionController::Base.helpers.asset_path('screenshot.png') }
-  validates_attachment :screenshot, :content_type => /\Aimage\/.*\Z/
+  validates_attachment_content_type :screenshot, :content_type => /\Aimage\/.*\Z/
 
   after_initialize :ensure_session_token
   attr_reader :password

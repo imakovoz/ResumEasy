@@ -9,6 +9,7 @@ class ScrapeJobs extends React.Component {
       location: '',
     };
     this.table = false;
+    this.auth = false;
     this.handleInput = this.handleInput.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
   }
@@ -31,24 +32,49 @@ class ScrapeJobs extends React.Component {
   }
 
   handleSearch() {
-    this.props.scrapeJobs(this.state);
+    // while (this.props.status === 'false') {
+    this.props
+      .liAuth({
+        username: 'shoytempus@gmail.com',
+        password: 'starwars1',
+        driver: this.props.driver,
+      })
+      .then(data => {
+        this.props.liAuth({
+          username: 'shoytempus@gmail.com',
+          password: 'starwars1',
+          driver: this.props.driver,
+        });
+      });
+
+    // this.props.scrapeJobs({
+    //   location: this.state.location,
+    //   position: this.state.position,
+    // });
   }
 
   render() {
+    let screenshot = null;
+    if (this.props.screenshot) {
+      screenshot = <img src={this.props.screenshot} id="screenshot" />;
+    }
     let result = (
-      <form id="scrape-form" onSubmit={this.handleSearch}>
-        <input
-          onChange={this.handleInput}
-          className="position"
-          placeholder="Job Description"
-        />
-        <input
-          onChange={this.handleInput}
-          className="location"
-          placeholder="Location"
-        />
-        <a onClick={this.handleSearch}>Search</a>
-      </form>
+      <section>
+        <form id="scrape-form" onSubmit={this.handleSearch}>
+          <input
+            onChange={this.handleInput}
+            className="position"
+            placeholder="Job Description"
+          />
+          <input
+            onChange={this.handleInput}
+            className="location"
+            placeholder="Location"
+          />
+          <a onClick={this.handleSearch}>Search</a>
+        </form>
+        {screenshot}
+      </section>
     );
     if (this.props.jobs.length > 0) {
       this.table = true;

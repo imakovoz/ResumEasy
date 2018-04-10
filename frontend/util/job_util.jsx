@@ -8,6 +8,14 @@ export const scrapeJobs = data => {
   });
 };
 
+export const liAuth = data => {
+  return $.ajax({
+    method: 'GET',
+    url: '/api/auth/linkedin',
+    data,
+  });
+};
+
 export const fetchJobs = data => {
   return $.ajax({
     method: 'GET',

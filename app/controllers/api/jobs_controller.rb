@@ -34,7 +34,7 @@ class Api::JobsController < ApplicationController
       # screenshot, driver, status = linkedin_login(params[:username], params[:password], params[:driver])
       # screenshot = File.open(screenshot)
       # User.find(current_user.id).update({screenshot: screenshot})
-      render json: {status: status}
+      render json: {screenshot: screenshot, status: status}
     elsif params[:status] == 'email'
       $driver.email(params[:code])
       render json: {url: $driver.current_url}

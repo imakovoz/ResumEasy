@@ -89,6 +89,8 @@ class Api::JobsController < ApplicationController
 end
 
 class LinkedinAuth
+  attr_accessor :driver
+
   def initialize
     options = Selenium::WebDriver::Chrome::Options.new
     chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']

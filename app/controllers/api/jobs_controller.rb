@@ -27,6 +27,7 @@ class Api::JobsController < ApplicationController
 
   def li_login
     if $driver
+      puts @driver.current_url
       render json: {status: 'true'}
     elsif params[:status] == 'false'
       $driver = LinkedinAuth.new
@@ -135,6 +136,7 @@ class LinkedinAuth
   end
 
   def scrape(data)
+    puts @driver.current_url
     @driver.navigate.to "https://www.linkedin.com/"
     wait = Selenium::WebDriver::Wait.new(:timeout => 60)
 
@@ -145,7 +147,7 @@ class LinkedinAuth
 
     while true
       page += 1
-      puts page
+      puts @driver.current_url
       container = wait.until { @driver.find_elements(css: '.card-list > li') }
       lis = container.dup
       container.map{|e| e.location_once_scrolled_into_view}

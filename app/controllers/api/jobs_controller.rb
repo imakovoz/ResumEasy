@@ -92,6 +92,7 @@ class LinkedinAuth
   attr_accessor :driver
 
   def initialize
+    puts "heroku test"
     options = Selenium::WebDriver::Chrome::Options.new
     chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
     options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku

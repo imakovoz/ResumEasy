@@ -26,16 +26,20 @@ class Api::JobsController < ApplicationController
   end
 
   def li_login
-    if params[:driver] == '0'
+    if $driver
+      render json: {status: 'true'}
+    elsif params[:status] == 'false'
       $driver = LinkedinAuth.new
-      screenshot, driver, status = $driver.signin(params[:username], params[:password])
+      screenshot, status = $driver.signin(params[:username], params[:password])
       # screenshot, driver, status = linkedin_login(params[:username], params[:password], params[:driver])
       screenshot = File.open(screenshot)
       User.find(current_user.id).update({screenshot: screenshot})
-      render json: {screenshot: current_user.screenshot.url, driver: "1234", status: status }
+      render json: {screenshot: current_user.screenshot.url, status: status}
+    elsif params[:status] == 'email'
+      $driver.email(params[:code])
+      render json: {url: $driver.current_url}
     else
-      debugger
-      $driver.reopen
+      render json: {status: "true"}
     end
   end
 
@@ -43,7 +47,7 @@ class Api::JobsController < ApplicationController
     location = params[:location].split(" ").join("%20")
     position = params[:position].split(" ").join("%20")
     data = {location: location, position: position, driver: params[:driver]}
-    jobs = scrape(data)
+    jobs = $driver.scrape(data)
     arr = []
     jobs.each do |job|
       company = 0
@@ -104,18 +108,102 @@ class LinkedinAuth
     element = @driver.find_element(id: 'login-submit')
     element.click
     wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-    status = (@driver.current_url[0, 29] == "https://www.linkedin.com/feed")
+    if @driver.current_url[0, 29] == "https://www.linkedin.com/feed"
+      status = "true"
+    elsif @driver.current_url == "https://www.linkedin.com/uas/consumer-email-challenge"
+      status = "email"
+    else
+      status = "false"
+    end
 
-    return [@driver.save_screenshot('screenshot.png'), @driver, status]
+    return [@driver.save_screenshot('screenshot.png'), status]
   end
 
   def info
     return [@driver.save_screenshot('screenshot.png'), @driver, status]
   end
 
-  def reopen
-    @driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=developer"
-    debugger
+  def email(code)
+    element = @driver.find_element(id: 'verification-code')
+    element.send_keys code
+
+    element = @driver.find_element(id: 'btn-primary')
+    element.click
+  end
+
+  def scrape(data)
+    @driver.navigate.to "https://www.linkedin.com/"
+    wait = Selenium::WebDriver::Wait.new(:timeout => 60)
+
+    jobs = []
+    page = 0
+    @driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=#{data[:position]}&location=#{data[:location]}"
+    wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+
+    while true
+      page += 1
+      container = wait.until { @driver.find_elements(css: '.card-list > li') }
+      lis = container.dup
+      container.map{|e| e.location_once_scrolled_into_view}
+      lis.each_with_index do |e, i|
+        job = Hash.new
+        begin
+          x = e.find_elements(tag_name: 'h3')[0].text
+        rescue
+          x = ""
+        end
+        job[:position]= x
+        begin
+          x = e.find_elements(tag_name: 'h4')[0].text
+        rescue
+          x = ""
+        end
+        job[:company]= x
+        begin
+          x = e.find_elements(css: '.job-card-search__company-name-link')[0].attribute('href').split('?eBP=')[0]
+        rescue
+          x = ""
+        end
+        job[:company_url]= x
+        begin
+          x = e.find_elements(tag_name: 'h5')[0].text[13..-1]
+        rescue
+          x = ""
+        end
+        job[:location]= x
+        begin
+          x = e.find_elements(tag_name: 'p')[0].text
+        rescue
+          x = ""
+        end
+        job[:description]= x
+        begin
+          x = e.find_elements(tag_name: 'a')[0].attribute('href').split('?eBP=')[0]
+        rescue
+          x = ""
+        end
+        job[:url]= x
+        begin
+          x = e.find_elements(css: '.job-card-search__easy-apply-text')[0].text == "Easy Apply"
+        rescue
+          x = false
+        end
+        job[:easy]= x
+        jobs.push(job) if job[:position] != "See jobs where you are a top applicant"
+      end
+
+      @driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+      sleep(1)
+      next_btn = @driver.find_elements(css: '.next')[0]
+      begin
+        next_btn.click()
+      rescue
+        break
+      end
+      sleep(1)
+      wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+    end
+    return jobs
   end
 end
 
@@ -127,9 +215,7 @@ def linkedin_login(username, password, driver)
     driver = Selenium::WebDriver.for :chrome
   else
     options = Selenium::WebDriver::Chrome::Options.new
-    debugger
     driver = Selenium::WebDriver.for(:remote, :desired_capabilities => {session_id: driver})
-    debugger
   end
   driver.navigate.to "https://www.linkedin.com/"
   wait = Selenium::WebDriver::Wait.new(:timeout => 30)
@@ -186,7 +272,7 @@ def scrape(data)
   driver = Selenium::WebDriver.for :chrome
   driver.navigate.to "https://www.linkedin.com/"
   x = driver.save_screenshot('resumeasy.png')
-  debugger
+  # debugger
   while driver.current_url[0, 29] != "https://www.linkedin.com/feed"
     sleep(1)
   end

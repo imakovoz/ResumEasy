@@ -11,12 +11,9 @@ class Modal extends React.Component {
       password: '',
     };
     this.handleInput = this.handleInput.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-    this.scrape = this.scrape.bind(this);
+    this.handleAuth = this.handleAuth.bind(this);
     this.handleEmailVerification = this.handleEmailVerification.bind(this);
   }
-
-  handleSubmit() {}
 
   handleInput(e) {
     const obj = {};
@@ -24,7 +21,7 @@ class Modal extends React.Component {
     this.setState(obj);
   }
 
-  handleSearch() {
+  handleAuth() {
     this.props
       .liAuth({
         username: this.state.username,
@@ -33,19 +30,12 @@ class Modal extends React.Component {
       })
       .then(result => {
         if (result.data.status === 'false') {
-          this.handleSearch();
+          this.handleAuth();
         } else if (result.data.status === 'true') {
           this.props.onClose();
-          this.scrape();
+          this.props.submit();
         }
       });
-  }
-
-  scrape() {
-    this.props.scrapeJobs({
-      location: this.props.loc,
-      position: this.props.position,
-    });
   }
 
   handleEmailVerification() {
@@ -56,7 +46,7 @@ class Modal extends React.Component {
       })
       .then(result => {
         if (result.data.status === 'false') {
-          this.handleSearch();
+          this.handleAuth();
         } else if (result.data.status === 'true') {
           this.scrape();
         }
@@ -85,7 +75,7 @@ class Modal extends React.Component {
                 id="password"
                 placeholder="Password"
               />
-              <a onClick={this.handleSearch}>Submit</a>
+              <a onClick={this.handleAuth}>Submit</a>
             </form>
           </div>
         </div>

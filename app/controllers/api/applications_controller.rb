@@ -30,7 +30,7 @@ class Api::ApplicationsController < ApplicationController
     resume = Rails.root.to_s + "/" + resumename + '.pdf'
     apps = current_user.applications.where("status = 'unsent'")
     arr = apps.map { |app| [app, Job.find(app.job_id)] }
-    arr = applyToJob(arr, resume)
+    arr = $driver.applyToJob(arr, resume)
     arr.map do |el|
       job = el[1]
 

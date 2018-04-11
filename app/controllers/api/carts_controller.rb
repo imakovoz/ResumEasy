@@ -22,7 +22,7 @@ class Api::CartsController < ApplicationController
 
   def sort
     carts = params[:carts]
-    carts = fetchDescriptions(carts)
+    carts = $driver.fetchDescriptions(carts)
     result = lda(parser(carts.keys.map{|key| carts[key][:description]}))
     @carts = []
     result.each.with_index do |el, i|

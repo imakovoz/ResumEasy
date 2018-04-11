@@ -1,12 +1,15 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import JobDisp from './job_disp_apply';
+import LIModal from '../li_auth_modal';
 
 class ApplyJobs extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       key: 1,
+      modal: false,
+      submit: null,
     };
   }
 
@@ -19,7 +22,11 @@ class ApplyJobs extends React.Component {
         this.props.currentUser.resumename &&
         this.props.currentUser.resume_file_name !== 'missing.png'
       ) {
-        this.props.apply();
+        if (this.props.status !== 'true') {
+          this.setState({ modal: true, submit: 'send' });
+        } else {
+          this.props.apply();
+        }
       } else {
         alert('Please update your user profile with all key information');
       }
@@ -29,18 +36,22 @@ class ApplyJobs extends React.Component {
   }
 
   handleSort(e) {
-    const carts = [];
+    if (this.props.status !== 'true') {
+      this.setState({ modal: true, submit: 'sort' });
+    } else {
+      const carts = [];
 
-    this.props.cart.forEach(cart => {
-      let job = this.props.jobs_obj[cart.job_id];
-      cart.url = job.url;
-      carts.push(cart);
-    });
+      this.props.cart.forEach(cart => {
+        let job = this.props.jobs_obj[cart.job_id];
+        cart.url = job.url;
+        carts.push(cart);
+      });
 
-    this.props
-      .categorizeCarts({ carts })
-      .then(() => this.setState({ key: (this.state.key += 1) }))
-      .then(() => $('#apply-table').DataTable());
+      this.props
+        .categorizeCarts({ carts })
+        .then(() => this.setState({ key: (this.state.key += 1) }))
+        .then(() => $('#apply-table').DataTable());
+    }
   }
 
   componentDidMount() {
@@ -51,6 +62,20 @@ class ApplyJobs extends React.Component {
       .then(() => this.props.fetchCompanies())
       .then(() => this.props.fetchApplications())
       .then(() => $('#apply-table').DataTable());
+  }
+
+  handleSubmit() {
+    if (this.state.submit === 'send') {
+      this.handleSendApp();
+      this.setState({ submit: null });
+    } else if (this.state.submit === 'sort') {
+      this.handleSort();
+      this.setState({ submit: null });
+    }
+  }
+
+  closeModal() {
+    this.setState({ modal: false });
   }
 
   render() {
@@ -95,6 +120,13 @@ class ApplyJobs extends React.Component {
     }
     return (
       <div id="apply-wrapper" key={this.state.key}>
+        <LIModal
+          isOpen={this.state.modal}
+          onClose={this.closeModal.bind(this)}
+          liAuth={this.props.liAuth}
+          submit={this.handleSubmit.bind(this)}
+          status={this.props.status}
+        />
         <div id="apply-btn-container">
           <div id="sort-btn" onClick={this.handleSort.bind(this)}>
             Sort jobs

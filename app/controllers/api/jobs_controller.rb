@@ -210,6 +210,62 @@ class LinkedinAuth
     end
     return jobs
   end
+
+  def fetchDescriptions(cart)
+    urls = cart.keys.map{|key| cart[key][:url]}
+
+    urls.each_with_index do |link, i|
+      @driver.navigate.to link
+      wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+      view_more = @driver.find_elements(css: '.view-more-icon')[0]
+      begin
+        view_more.click()
+        sleep(1)
+      rescue
+
+      end
+      desc_container = @driver.find_elements(css: '#job-details *')
+      desc = []
+      desc_container = [@driver.find_element(css: '#job-details')] if @driver.find_element(css: '#job-details').text.length > 100
+      desc_container.each do |e|
+        begin
+          desc.push(e.text)
+        rescue
+          desc.push("")
+        end
+      end
+      description = desc.join(' ').gsub(/[^A-Za-z ]/, ' ').gsub(/\s+/, ' ').downcase
+      cart[i.to_s][:description] = description
+      if description.length > 200
+        Job.find(cart[i.to_s][:job_id]).update({description: description})
+      end
+    end
+    return cart
+  end
+
+  def applyToJob(data, resume)
+    number = User.find(current_user.id).phone
+
+    result = data.map.with_index do |el, i|
+      @driver.navigate.to el[1].url
+      wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+      sleep(2)
+      apply_btn = @driver.find_elements(css: '.js-apply-button')[0]
+      apply_btn.click()
+      wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+      phone = @driver.find_element(id: 'apply-form-phone-input')
+      phone.send_keys number
+      upload = @driver.find_element(id: 'file-browse-input')
+      upload.send_keys resume
+      @driver.find_elements(css: '.jobs-apply-form__follow-company-label')[0].click()
+      wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+      @application = Application.find(el[0].id)
+      @application.update({status: "sent"})
+      el[0] = @application
+      el
+    end
+    return result
+  end
 end
 
 def linkedin_login(username, password, driver)

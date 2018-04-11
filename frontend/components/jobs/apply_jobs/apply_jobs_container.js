@@ -1,6 +1,6 @@
 import Apply from './apply_jobs';
 import { connect } from 'react-redux';
-import { fetchJobs } from '../../../actions/job_actions';
+import { fetchJobs, liAuth } from '../../../actions/job_actions';
 import { fetchCompanies } from '../../../actions/company_actions';
 import { fetchUser } from '../../../actions/user_actions';
 import {
@@ -27,6 +27,7 @@ const mapStateToProps = (state, ownProps) => {
     jobs_obj: state.entities.jobs || {},
     companies: state.entities.companies || {},
     cart: _.values(state.entities.carts) || [],
+    status: state.entities.auth.status || 'false',
     applications: _.values(state.entities.applications) || [],
   };
 };
@@ -45,6 +46,7 @@ const mapDispatchToProps = dispatch => ({
   apply: () => dispatch(apply()),
   updateApplication: id => dispatch(updateApplication(id)),
   deleteApplication: id => dispatch(deleteApplication(id)),
+  liAuth: data => dispatch(liAuth(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Apply);

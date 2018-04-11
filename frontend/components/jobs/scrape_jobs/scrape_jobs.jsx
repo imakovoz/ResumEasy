@@ -11,7 +11,6 @@ class ScrapeJobs extends React.Component {
       modal: false,
     };
     this.table = false;
-    this.auth = false;
     this.handleInput = this.handleInput.bind(this);
     this.scrape = this.scrape.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
@@ -54,11 +53,6 @@ class ScrapeJobs extends React.Component {
   }
 
   render() {
-    // let screenshot = null;
-    // if (this.props.screenshot) {
-    //   screenshot = <img src={this.props.screenshot} id="screenshot" />;
-    // }
-
     let result = (
       <section>
         <form id="scrape-form" onSubmit={this.handleSearch}>
@@ -110,10 +104,8 @@ class ScrapeJobs extends React.Component {
           isOpen={this.state.modal}
           onClose={this.closeModal.bind(this)}
           liAuth={this.props.liAuth}
-          scrapeJobs={this.props.scrapeJobs}
+          submit={this.scrape}
           status={this.props.status}
-          loc={this.state.location}
-          position={this.state.position}
         />
         {result}
       </div>

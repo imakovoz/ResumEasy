@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import LIModal from '../li_auth_modal';
 
 class ScrapeJobs extends React.Component {
   constructor(props) {
@@ -7,13 +8,11 @@ class ScrapeJobs extends React.Component {
     this.state = {
       position: '',
       location: '',
-      emailv: false,
-      code: '',
+      modal: false,
     };
     this.table = false;
     this.auth = false;
     this.handleInput = this.handleInput.bind(this);
-    this.handleEmailVerification = this.handleEmailVerification.bind(this);
     this.scrape = this.scrape.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
   }
@@ -36,21 +35,11 @@ class ScrapeJobs extends React.Component {
   }
 
   handleSearch() {
-    this.props
-      .liAuth({
-        username: 'shoytempus@gmail.com',
-        password: 'starwars1',
-        status: this.props.status,
-      })
-      .then(result => {
-        if (result.data.status === 'false') {
-          this.handleSearch();
-        } else if (result.data.status === 'email') {
-          this.setState({ emailv: true });
-        } else {
-          this.scrape();
-        }
-      });
+    if (this.props.status !== 'true') {
+      this.setState({ modal: true });
+    } else {
+      this.scrape();
+    }
   }
 
   scrape() {
@@ -60,22 +49,8 @@ class ScrapeJobs extends React.Component {
     });
   }
 
-  handleEmailVerification() {
-    this.props
-      .liAuth({
-        code: this.state.code,
-        status: this.props.status,
-      })
-      .then(result => {
-        if (result.data.status === 'false') {
-          this.handleSearch();
-        } else if (result.data.status === 'email') {
-          this.setState({ emailv: true });
-        } else {
-          this.setState({ emailv: false });
-          this.scrape();
-        }
-      });
+  closeModal() {
+    this.setState({ modal: false });
   }
 
   render() {
@@ -101,19 +76,6 @@ class ScrapeJobs extends React.Component {
         </form>
       </section>
     );
-
-    if (this.state.emailv) {
-      result = (
-        <form id="scrape-form" onSubmit={this.handleEmailVerification}>
-          <input
-            onChange={this.handleInput}
-            className="code"
-            placeholder="Verification Code"
-          />
-          <a onClick={this.handleEmailVerification}>Submit</a>
-        </form>
-      );
-    }
 
     if (this.props.jobs.length > 0) {
       this.table = true;
@@ -142,7 +104,20 @@ class ScrapeJobs extends React.Component {
         </table>
       );
     }
-    return <div id="search-wrapper">{result}</div>;
+    return (
+      <div id="search-wrapper">
+        <LIModal
+          isOpen={this.state.modal}
+          onClose={this.closeModal.bind(this)}
+          liAuth={this.props.liAuth}
+          scrapeJobs={this.props.scrapeJobs}
+          status={this.props.status}
+          loc={this.state.location}
+          position={this.state.position}
+        />
+        {result}
+      </div>
+    );
   }
 }
 

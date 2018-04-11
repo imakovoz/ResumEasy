@@ -65,3 +65,52 @@
   width: 500px;
   height: 500px;
 }
+
+.modal-backdrop {
+  width: 100vw;
+  height: 1000px;
+  border-radius: 5px;
+  background-color: rgba(211, 211, 211, 0.7);
+  position: fixed;
+  top: -100px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.modal {
+  margin: 0 auto;
+  margin-top: 100px;
+  background-color: #f0f0f0;
+  margin-bottom: 200px;
+  width: 400px;
+  height: 500px;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+#li_auth_modal_form {
+  display: flex;
+  flex-direction: column;
+  width: 245px;
+  margin-top: 50px;
+  align-items: center;
+}
+
+#li_auth_modal_form * {
+  padding: 5px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+#li_auth_modal_form input {
+  width: 200px;
+}
+
+#li_auth_modal_form a {
+  border: 1px solid black;
+  padding: 5px 20px;
+  background-color: white;
+}

@@ -26,10 +26,7 @@ class Api::JobsController < ApplicationController
   end
 
   def li_login
-    if $driver
-      puts $driver.current_url
-      render json: {status: 'true'}
-    elsif params[:status] == 'false'
+    if params[:status] == 'false'
       $driver = LinkedinAuth.new
       screenshot, status = $driver.signin(params[:username], params[:password])
       # screenshot, driver, status = linkedin_login(params[:username], params[:password], params[:driver])
@@ -39,7 +36,7 @@ class Api::JobsController < ApplicationController
     elsif params[:status] == 'email'
       $driver.email(params[:code])
       render json: {url: $driver.current_url}
-    else
+    elsif $driver
       render json: {status: "true"}
     end
   end
@@ -124,7 +121,7 @@ class LinkedinAuth
   end
 
   def info
-    return [@driver.save_screenshot('screenshot.png'), @driver, status]
+    return @driver.current_url
   end
 
   def email(code)

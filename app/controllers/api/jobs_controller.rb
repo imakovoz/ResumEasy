@@ -35,7 +35,7 @@ class Api::JobsController < ApplicationController
       render json: {status: status}
     elsif params[:status] == 'email'
       $driver.email(params[:code])
-      render json: {url: $driver.current_url}
+      render json: {url: $driver.info.current_url}
     elsif $driver
       render json: {status: "true"}
     end

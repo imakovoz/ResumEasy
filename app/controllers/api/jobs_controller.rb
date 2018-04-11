@@ -142,7 +142,7 @@ class LinkedinAuth
     @driver.navigate.to "https://www.linkedin.com/jobs/search/?keywords=#{data[:position]}&location=#{data[:location]}"
     wait = Selenium::WebDriver::Wait.new(:timeout => 30)
 
-    while true
+    while page < 1
       page += 1
       puts @driver.current_url
       container = wait.until { @driver.find_elements(css: '.card-list > li') }

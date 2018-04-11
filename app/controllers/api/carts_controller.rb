@@ -51,6 +51,8 @@ class Api::CartsController < ApplicationController
     render :index
   end
 
+  # handle_asynchronously :sort
+
   private
     def set_cart
       @cart = Cart.find(params[:id])

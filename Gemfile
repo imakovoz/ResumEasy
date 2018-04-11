@@ -34,6 +34,8 @@ gem 'figaro'
 gem 'aws-sdk', '< 3.0'
 gem 'selenium-webdriver'
 gem 'lda-ruby'
+gem 'sidekiq'
+gem 'delayed_job_active_record'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

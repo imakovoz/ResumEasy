@@ -39,6 +39,8 @@ class Api::ApplicationsController < ApplicationController
     render :index
   end
 
+  # handle_asynchronously :apply
+
   private
     def set_application
       @application = Application.find(params[:id])

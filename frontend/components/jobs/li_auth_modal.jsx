@@ -9,6 +9,7 @@ class Modal extends React.Component {
       code: '',
       username: '',
       password: '',
+      spinner: false,
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleAuth = this.handleAuth.bind(this);
@@ -32,8 +33,9 @@ class Modal extends React.Component {
         if (result.data.status === 'false') {
           this.handleAuth();
         } else if (result.data.status === 'true') {
-          this.props.onClose();
-          this.props.submit();
+          this.props.submit().then(() => {
+            this.props.onClose();
+          });
         }
       });
   }
@@ -59,6 +61,15 @@ class Modal extends React.Component {
       return null;
     }
     if (this.props.status === 'false') {
+      if (this.state.spinner) {
+        return (
+          <div className="modal-backdrop">
+            <div className="modal">
+              <div class="loader">Loading...</div>
+            </div>
+          </div>
+        );
+      }
       return (
         <div className="modal-backdrop">
           <div className="modal">

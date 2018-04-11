@@ -77,6 +77,8 @@ class Api::JobsController < ApplicationController
     render :index
   end
 
+  # handle_asynchronously :scrape_index
+
   private
 
     def set_job
@@ -217,27 +219,38 @@ class LinkedinAuth
     urls.each_with_index do |link, i|
       @driver.navigate.to link
       wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-      view_more = @driver.find_elements(css: '.view-more-icon')[0]
       begin
-        view_more.click()
-        sleep(1)
-      rescue
-
-      end
-      desc_container = @driver.find_elements(css: '#job-details *')
-      desc = []
-      desc_container = [@driver.find_element(css: '#job-details')] if @driver.find_element(css: '#job-details').text.length > 100
-      desc_container.each do |e|
-        begin
-          desc.push(e.text)
-        rescue
-          desc.push("")
+        expired = @driver.find_element(css: '.jobs-details-top-card__expired-job')
+        if expired
+          Job.find(cart[i.to_s][:job_id]).destroy
         end
-      end
-      description = desc.join(' ').gsub(/[^A-Za-z ]/, ' ').gsub(/\s+/, ' ').downcase
-      cart[i.to_s][:description] = description
-      if description.length > 200
-        Job.find(cart[i.to_s][:job_id]).update({description: description})
+      rescue
+        view_more = @driver.find_elements(css: '.view-more-icon')[0]
+        begin
+          view_more.click()
+          sleep(1)
+        rescue
+
+        end
+        sleep(1)
+        desc_container = @driver.find_elements(css: '#job-details *')
+        # check to see if odd formatting is cause all text in one div (ember or some other linkedin markup)
+        desc_container = [@driver.find_element(css: '#job-details')] if @driver.find_element(css: '#job-details').text.length > 100
+        desc = []
+        desc_container.each do |e|
+          begin
+            desc.push(e.text)
+          rescue
+            desc.push("")
+          end
+        end
+        description = desc.join(' ').gsub(/[^A-Za-z ]/, ' ').gsub(/\s+/, ' ').downcase
+        if description.length > 200
+          cart[i.to_s][:description] = description
+          Job.find(cart[i.to_s][:job_id]).update({description: description})
+        else
+          cart[i.to_s][:description] = Job.find(cart[i.to_s][:job_id])[:description]
+        end
       end
     end
     return cart

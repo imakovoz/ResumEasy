@@ -105,9 +105,10 @@ class User < ApplicationRecord
       cart = self.carts.find_by({ job_id: jobs[i][:id] })
       category = 0
       if (el[0].is_a? Float) || (el[0].is_a? Integer)
-        max = -999999999
+        max = el[0]
+        # max = -999999999
         el.each.with_index do |e, j|
-          if e > max
+          if e >= max
             category = j + 1
             max = e
           end
@@ -323,8 +324,8 @@ class LinkedinAuth
         @application = Application.find(el[0].id)
         @application.update({status: "sent"})
       rescue
-        apply_btn = @driver.find_element(css: '.jobs-s-apply__button')
         Job.find(el[0].job_id).destroy
+        # apply_btn = @driver.find_element(css: '.jobs-s-apply__button')
         # @driver.navigate.to @driver.current_url.split('/')[0...3].concat(["job-apply"]).concat([@driver.current_url.split('/')[-1]]).join('/')
         # wait = Selenium::WebDriver::Wait.new(:timeout => 30)
         # sleep(2)
@@ -341,31 +342,6 @@ class LinkedinAuth
   end
 end
 
-def linkedin_login(username, password, driver)
-  if driver == '0'
-    options = Selenium::WebDriver::Chrome::Options.new
-    chrome_bin_path = ENV['GOOGLE_CHROME_SHIM']
-    options.binary = chrome_bin_path if chrome_bin_path # only use custom path on heroku
-    driver = Selenium::WebDriver.for :chrome
-  else
-    options = Selenium::WebDriver::Chrome::Options.new
-    driver = Selenium::WebDriver.for(:remote, :desired_capabilities => {session_id: driver})
-  end
-  driver.navigate.to 'https://www.linkedin.com/'
-  wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-  element = driver.find_element(id: 'login-email')
-  element.send_keys username
-
-  element = driver.find_element(id: 'login-password')
-  element.send_keys password
-
-  element = driver.find_element(id: 'login-submit')
-  element.click
-  wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-  status = (driver.current_url[0, 29] == 'https://www.linkedin.com/feed')
-
-  return [driver.save_screenshot('screenshot.png'), driver, status]
-end
 def parser(corpus)
   stopwords = ['the','of','and','to','a','in','for','is','on','that','by','this','with','i','you','it','not','or','be','are','from','at','as','your','all','have','new','more','an','was','we','will','home','can','us','about','if','page','my','has','search','free','but','our','one','other','do','no','information','time','they','site','he','up','may','what','which','their','news','out','use','any','there','see','only','so','his','when','contact','here','business','who','web','also','now','help','get','pm','view','online','c','e','first','am','been','would','how','were','me','s','services','some','these','click','its','like','service','x','than','find','price','date','back','top','people','had','list','name','just','over','state','year','day','into','email','two','health','n','world','re','next','used','go','b','work','last','most','products','music','buy','data','make','them','should','product','system','post','her','city','t','add','policy','number','such','please','available','copyright','support','message','after','best','software','then','jan','good','video','well','d','where','info','rights','public','books','high','school','through','m','each','links','she','review','years','order','very','privacy','book','items','company','r','read','group','need','many','user','said','de','does','set','under','general','research','university','january','mail','full','map','reviews','program','life','know','games','way','days','management','p','part','could','great','united','hotel','real','f','item','international','center','ebay','must','store','travel','comments','made','development','report','off','member','details','line','terms','before','hotels','did','send','right','type','because','local','those','using','results','office','education','national','car','design','take','posted','internet','address','community','within','states','area','want','phone','dvd','shipping','reserved','subject','between','forum','family','l','long','based','w','code','show','o','even','black','check','special','prices','website','index','being','women','much','sign','file','link','open','today','technology','south','case','project','same','pages','uk','version','section','own','found','sports','house','related','security','both','g','county','american','photo','game','members','power','while','care','network','down','computer','systems','three','total','place','end','following','download','h','him','without','per','access','think','north','resources','current','posts','big','media','law','control','water','history','pictures','size','art','personal','since','including','guide','shop','directory','board','location','change','white','text','small','rating','rate','government','children','during','usa','return','students','v','shopping','account','times','sites','level','digital','profile','previous','form','events','love','old','john','main','call','hours','image','department','title','description','non','k','y','insurance','another','why','shall','property','class','cd','still','money','quality','every','listing','content','country','private','little','visit','save','tools','job','work','few','look','u','work','experience','working','employment','skills','team','poster','premium','strong']
   data = []

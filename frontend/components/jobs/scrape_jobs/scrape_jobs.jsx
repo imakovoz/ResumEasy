@@ -17,9 +17,9 @@ class ScrapeJobs extends React.Component {
   }
 
   componentDidMount() {
-    this.props.clearJobs().then(() => {
-      this.props.fetchUser(this.props.currentUser.id);
-    });
+    Promise.resolve(this.props.clearJobs()).then(() =>
+      this.props.fetchUser(this.props.currentUser.id)
+    );
   }
 
   componentDidUpdate() {

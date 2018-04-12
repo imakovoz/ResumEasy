@@ -17,7 +17,7 @@
 #  resumename          :string
 #  phone               :string
 #
-
+require 'selenium-webdriver'
 class User < ApplicationRecord
   validates :username, uniqueness: true, presence: true
   validates :password_digest, :session_token, presence: true

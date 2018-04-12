@@ -1,2 +1,1 @@
 
-rails jobs:work

@@ -32,7 +32,7 @@ class Api::JobsController < ApplicationController
       screenshot = File.open($driver.driver.save_screenshot('screenshot.png'))
       User.find(current_user.id).update({screenshot: screenshot})
       url = current_user.screenshot.url.to_s
-      render json: {status: 'captcha', url: url}
+      render json: {status: status, url: url}
     elsif params[:status] == 'email'
       $driver.email(params[:code])
       status = 'false'
@@ -147,7 +147,7 @@ class LinkedinAuth
     width = body.size.to_s.split(' ')[-2].split('=')[-1][0...-1].to_i
     @driver.action.move_to(body, (-0.5 * width + position[0]), (-0.5 * height + position[1])).perform
     @driver.action.click.perform
-    
+
   end
 
   def scrape(data)

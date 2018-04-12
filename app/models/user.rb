@@ -192,7 +192,6 @@ class LinkedinAuth
     height = body.size.to_s.split(' ')[-1].split('=')[-1][0...-1].to_i
     width = body.size.to_s.split(' ')[-2].split('=')[-1][0...-1].to_i
     @driver.action.move_to(body, (-0.5 * width + position[0]), (-0.5 * height + position[1])).perform
-    debugger
   end
 
   def scrape(data)

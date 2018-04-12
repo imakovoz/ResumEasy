@@ -127,7 +127,6 @@ class Modal extends React.Component {
         </div>
       );
     } else if (this.props.status === 'captcha') {
-      debugger;
       return (
         <div className="modal-backdrop">
           <div className="modal">

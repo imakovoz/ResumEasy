@@ -17,7 +17,9 @@ class ScrapeJobs extends React.Component {
   }
 
   componentDidMount() {
-    this.props.clearJobs();
+    this.props.clearJobs().then(() => {
+      this.props.fetchUser(this.props.currentUser.id);
+    });
   }
 
   componentDidUpdate() {
@@ -106,7 +108,8 @@ class ScrapeJobs extends React.Component {
           liAuth={this.props.liAuth}
           submit={this.scrape}
           status={this.props.status}
-          url={this.props.url}
+          fetchUser={this.props.fetchUser}
+          currentUser={this.props.currentUser}
         />
         {result}
       </div>

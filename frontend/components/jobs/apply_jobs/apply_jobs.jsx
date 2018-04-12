@@ -41,14 +41,14 @@ class ApplyJobs extends React.Component {
     } else {
       const carts = [];
 
-      this.props.cart.forEach(cart => {
-        let job = this.props.jobs_obj[cart.job_id];
-        cart.url = job.url;
-        carts.push(cart);
-      });
+      // this.props.cart.forEach(cart => {
+      //   let job = this.props.jobs_obj[cart.job_id];
+      //   cart.url = job.url;
+      //   carts.push(cart);
+      // });
 
       this.props
-        .categorizeCarts({ carts })
+        .categorizeCarts({ carts: this.props.cart })
         .then(() => this.setState({ key: (this.state.key += 1) }))
         .then(() => $('#apply-table').DataTable());
     }
@@ -126,7 +126,8 @@ class ApplyJobs extends React.Component {
           liAuth={this.props.liAuth}
           submit={this.handleSubmit.bind(this)}
           status={this.props.status}
-          url={this.props.url}
+          fetchUser={this.props.fetchUser}
+          currentUser={this.props.currentUser}
         />
         <div id="apply-btn-container">
           <div id="sort-btn" onClick={this.handleSort.bind(this)}>

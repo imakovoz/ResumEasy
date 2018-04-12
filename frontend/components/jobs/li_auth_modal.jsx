@@ -33,13 +33,17 @@ class Modal extends React.Component {
         })
         .then(result => {
           if (result.data.status === 'false') {
-            this.handleAuth();
+            this.props.fetchUser(this.props.currentUser.id).then(() => {
+              this.handleAuth();
+            });
           } else if (result.data.status === 'true') {
             this.props.submit().then(() => {
               Promise.resolve(this.setState({ spinner: true })).then(() => {
                 this.props.onClose();
               });
             });
+          } else {
+            this.props.fetchUser(this.props.currentUser.id);
           }
         });
     });
@@ -127,10 +131,14 @@ class Modal extends React.Component {
         </div>
       );
     } else if (this.props.status === 'captcha') {
+      debugger;
       return (
         <div className="modal-backdrop">
           <div className="modal">
-            <img src={this.props.url} onClick={this.captcha} />
+            <img
+              src={this.props.currentUser.screenshot}
+              onClick={this.captcha}
+            />
           </div>
         </div>
       );

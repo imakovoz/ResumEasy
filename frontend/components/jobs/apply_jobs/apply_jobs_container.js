@@ -29,7 +29,6 @@ const mapStateToProps = (state, ownProps) => {
     cart: _.values(state.entities.carts) || [],
     status: state.entities.auth.status || 'false',
     applications: _.values(state.entities.applications) || [],
-    url: state.entities.auth.url || 'false',
   };
 };
 

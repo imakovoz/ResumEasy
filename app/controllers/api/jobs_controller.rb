@@ -32,7 +32,7 @@ class Api::JobsController < ApplicationController
       screenshot = File.open($driver.driver.save_screenshot('screenshot.png'))
       User.find(current_user.id).update({screenshot: screenshot})
       url = current_user.screenshot.url.to_s
-      render json: {status: status, url: current_user.screenshot.url.to_s}
+      render json: {status: status}
     elsif params[:status] == 'email'
       $driver.email(params[:code])
       status = 'false'
@@ -46,7 +46,7 @@ class Api::JobsController < ApplicationController
       url = current_user.screenshot.url.to_s
       status = 'captcha'
       status = 'true' if $driver.driver.current_url[0, 45] != 'https://www.linkedin.com/uas/consumer-captcha'
-      render json: {status: status , url: current_user.screenshot.url.to_s}
+      render json: {status: status}
     elsif $driver
       render json: {status: 'true'}
     end

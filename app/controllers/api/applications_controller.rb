@@ -23,20 +23,21 @@ class Api::ApplicationsController < ApplicationController
   end
 
   def apply
-    resumename = User.find(current_user.id).resumename
-    open(resumename + '.pdf', 'wb') do |file|
-      file << open(current_user.resume.url).read
-    end
-    resume = Rails.root.to_s + "/" + resumename + '.pdf'
-    apps = current_user.applications.where("status = 'unsent'")
-    arr = apps.map { |app| [app, Job.find(app.job_id)] }
-    arr = $driver.applyToJob(arr, resume)
-    arr.map do |el|
-      job = el[1]
-
-    end
-    @applications = User.find(current_user.id).applications
-    render :index
+    User.find(current_user.id).delay.apply($driver)
+    # resumename = User.find(current_user.id).resumename
+    # open(resumename + '.pdf', 'wb') do |file|
+    #   file << open(current_user.resume.url).read
+    # end
+    # resume = Rails.root.to_s + "/" + resumename + '.pdf'
+    # apps = current_user.applications.where("status = 'unsent'")
+    # arr = apps.map { |app| [app, Job.find(app.job_id)] }
+    # arr = $driver.applyToJob(arr, resume)
+    # arr.map do |el|
+    #   job = el[1]
+    #
+    # end
+    # @applications = User.find(current_user.id).applications
+    # render :index
   end
 
   # handle_asynchronously :apply

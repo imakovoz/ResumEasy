@@ -25,7 +25,7 @@ class ApplyJobs extends React.Component {
         if (this.props.status !== 'true') {
           this.setState({ modal: true, submit: 'send' });
         } else {
-          this.props.delay.apply();
+          this.props.apply();
         }
       } else {
         alert('Please update your user profile with all key information');
@@ -47,7 +47,7 @@ class ApplyJobs extends React.Component {
         carts.push(cart);
       });
 
-      this.props.delay
+      this.props
         .categorizeCarts({ carts })
         .then(() => this.setState({ key: (this.state.key += 1) }))
         .then(() => $('#apply-table').DataTable());

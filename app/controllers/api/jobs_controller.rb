@@ -44,37 +44,38 @@ class Api::JobsController < ApplicationController
   end
 
   def scrape_index
-    location = params[:location].split(' ').join('%20')
-    position = params[:position].split(' ').join('%20')
-    data = {location: location, position: position, driver: params[:driver]}
-    jobs = $driver.scrape(data)
-    arr = []
-    jobs.each do |job|
-      company = 0
-      if !(Job.find_by(url: job[:url]).nil?)
-        job.delete(:company)
-        job.delete(:company_url)
-        url = job[:url]
-        job = Job.find_by(url: job[:url]).update(job)
-        job = Job.find_by(url: url)
-      else
-        if !(Company.find_by(name: job[:company]).nil?)
-          company = Company.find_by(name: job[:company])
-        else
-          company = Company.new({name: job[:company], url: job[:company_url]})
-          company.save!
-        end
-        job[:company_id] = company[:id]
-        job.delete(:company)
-        job.delete(:company_url)
-        job = Job.new(job)
-        job.save!
-        job = Job.all.last
-      end
-      arr.push(job)
-    end
-    @jobs = arr
-    render :index
+    User.find(current_user.id).delay.scrape(params[:location], params[:position], $driver)
+    # location = params[:location].split(' ').join('%20')
+    # position = params[:position].split(' ').join('%20')
+    # data = {location: location, position: position, driver: params[:driver]}
+    # jobs = $driver.scrape(data)
+    # arr = []
+    # jobs.each do |job|
+    #   company = 0
+    #   if !(Job.find_by(url: job[:url]).nil?)
+    #     job.delete(:company)
+    #     job.delete(:company_url)
+    #     url = job[:url]
+    #     job = Job.find_by(url: job[:url]).update(job)
+    #     job = Job.find_by(url: url)
+    #   else
+    #     if !(Company.find_by(name: job[:company]).nil?)
+    #       company = Company.find_by(name: job[:company])
+    #     else
+    #       company = Company.new({name: job[:company], url: job[:company_url]})
+    #       company.save!
+    #     end
+    #     job[:company_id] = company[:id]
+    #     job.delete(:company)
+    #     job.delete(:company_url)
+    #     job = Job.new(job)
+    #     job.save!
+    #     job = Job.all.last
+    #   end
+    #   arr.push(job)
+    # end
+    # @jobs = arr
+    # render :index
   end
 
   # handle_asynchronously :scrape_index

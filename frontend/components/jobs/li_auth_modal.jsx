@@ -23,7 +23,8 @@ class Modal extends React.Component {
   }
 
   handleAuth() {
-    this.props
+    Promise.resolve(this.setState({spinner: true})).then(() => {
+      this.props
       .liAuth({
         username: this.state.username,
         password: this.state.password,
@@ -34,10 +35,13 @@ class Modal extends React.Component {
           this.handleAuth();
         } else if (result.data.status === 'true') {
           this.props.submit().then(() => {
-            this.props.onClose();
+            Promise.resolve(this.setState({spinner: true})).then(() => {
+              this.props.onClose();
+            }
           });
         }
       });
+    })
   }
 
   handleEmailVerification() {

@@ -21,27 +21,28 @@ class Api::CartsController < ApplicationController
   end
 
   def sort
-    carts = params[:carts]
-    carts = $driver.fetchDescriptions(carts)
-    result = lda(parser(carts.keys.map{|key| carts[key][:description]}))
-    @carts = []
-    result.each.with_index do |el, i|
-      cart = params[:carts][i.to_s]
-      category = 0
-      if (el[0].is_a? Float) || (el[0].is_a? Integer)
-        max = -999999999
-        el.each.with_index do |e, j|
-          if e > max
-            category = j + 1
-            max = e
-          end
-        end
-      end
-      Cart.find(cart[:id]).update({category: category.to_s})
-      cart = Cart.find(cart[:id])
-      @carts.push(cart)
-    end
-    render :index
+    User.find(current_user.id).delay.sort($driver)
+    # carts = params[:carts]
+    # carts = $driver.fetchDescriptions(carts)
+    # result = lda(parser(carts.keys.map{|key| carts[key][:description]}))
+    # @carts = []
+    # result.each.with_index do |el, i|
+    #   cart = params[:carts][i.to_s]
+    #   category = 0
+    #   if (el[0].is_a? Float) || (el[0].is_a? Integer)
+    #     max = -999999999
+    #     el.each.with_index do |e, j|
+    #       if e > max
+    #         category = j + 1
+    #         max = e
+    #       end
+    #     end
+    #   end
+    #   Cart.find(cart[:id]).update({category: category.to_s})
+    #   cart = Cart.find(cart[:id])
+    #   @carts.push(cart)
+    # end
+    # render :index
   end
 
   def destroy

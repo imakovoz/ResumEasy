@@ -19,7 +19,7 @@ export const addToCart = data => dispatch =>
   APIUtil.addToCart(data).then(cart => dispatch(receiveCart(cart)));
 
 export const categorizeCarts = data => dispatch =>
-  APIUtil.categorizeCarts(data).then(carts => dispatch(receiveCarts(carts)));
+  APIUtil.categorizeCarts(data);
 
 export const removeFromCart = id => dispatch =>
   APIUtil.removeFromCart(id).then(carts => dispatch(receiveCarts(carts)));

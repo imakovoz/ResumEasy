@@ -44,7 +44,7 @@ export const liAuth = data => dispatch => {
 };
 
 export const scrapeJobs = data => dispatch => {
-  return APIUtil.scrapeJobs(data).then(jobs => dispatch(receiveJobs(jobs)));
+  return APIUtil.scrapeJobs(data);
 };
 
 export const clearJobs = () => dispatch => {

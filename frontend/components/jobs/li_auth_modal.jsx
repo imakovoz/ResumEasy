@@ -23,25 +23,25 @@ class Modal extends React.Component {
   }
 
   handleAuth() {
-    Promise.resolve(this.setState({spinner: true})).then(() => {
+    Promise.resolve(this.setState({ spinner: true })).then(() => {
       this.props
-      .liAuth({
-        username: this.state.username,
-        password: this.state.password,
-        status: this.props.status,
-      })
-      .then(result => {
-        if (result.data.status === 'false') {
-          this.handleAuth();
-        } else if (result.data.status === 'true') {
-          this.props.submit().then(() => {
-            Promise.resolve(this.setState({spinner: true})).then(() => {
-              this.props.onClose();
-            }
-          });
-        }
-      });
-    })
+        .liAuth({
+          username: this.state.username,
+          password: this.state.password,
+          status: this.props.status,
+        })
+        .then(result => {
+          if (result.data.status === 'false') {
+            this.handleAuth();
+          } else if (result.data.status === 'true') {
+            this.props.submit().then(() => {
+              Promise.resolve(this.setState({ spinner: true })).then(() => {
+                this.props.onClose();
+              });
+            });
+          }
+        });
+    });
   }
 
   handleEmailVerification() {

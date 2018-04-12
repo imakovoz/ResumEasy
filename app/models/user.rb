@@ -99,11 +99,10 @@ class User < ApplicationRecord
   end
 
   def sort(driver)
-    carts = self.carts
-    carts = driver.fetchDescriptions(carts)
-    result = lda(parser(carts.keys.map{|key| carts[key][:description]}))
+    jobs = driver.fetchDescriptions(self.jobs)
+    result = lda(parser(jobs.map{|job| job[:description]}))
     result.each.with_index do |el, i|
-      cart = params[:carts][i.to_s]
+      cart = self.carts.find_by({ job_id: jobs[i][:id] })
       category = 0
       if (el[0].is_a? Float) || (el[0].is_a? Integer)
         max = -999999999
@@ -114,7 +113,7 @@ class User < ApplicationRecord
           end
         end
       end
-      Cart.find(cart[:id]).update({category: category.to_s})
+      cart.update({category: category.to_s})
     end
   end
 
@@ -123,10 +122,13 @@ class User < ApplicationRecord
     resume = open(resumename + '.pdf', 'wb') do |file|
       file << open(self.resume.url).read
     end
+
+
     apps = self.applications.where("status = 'unsent'")
     arr = apps.map { |app| [app, Job.find(app.job_id)] }
-    driver.applyToJob(arr, resume)
+    driver.applyToJob(arr, resume, self.phone)
   end
+
 
 
 
@@ -261,11 +263,12 @@ class LinkedinAuth
     return jobs
   end
 
-  def fetchDescriptions(cart)
-    urls = cart.keys.map{|key| cart[key][:url]}
+  def fetchDescriptions(jobs)
+    urls = jobs
+    arr = []
 
-    urls.each_with_index do |link, i|
-      @driver.navigate.to link
+    urls.each_with_index do |job, i|
+      @driver.navigate.to job[:url]
       wait = Selenium::WebDriver::Wait.new(:timeout => 30)
       begin
         expired = @driver.find_element(css: '.jobs-details-top-card__expired-job')
@@ -294,38 +297,47 @@ class LinkedinAuth
         end
         description = desc.join(' ').gsub(/[^A-Za-z ]/, ' ').gsub(/\s+/, ' ').downcase
         if description.length > 200
-          cart[i.to_s][:description] = description
-          Job.find(cart[i.to_s][:job_id]).update({description: description})
-        else
-          cart[i.to_s][:description] = Job.find(cart[i.to_s][:job_id])[:description]
+          job.update({description: description})
         end
+        arr.push(job)
       end
     end
-    return cart
+    return arr
   end
 
-  def applyToJob(data, resume)
-    number = User.find(current_user.id).phone
+  def applyToJob(data, resume, phone)
 
-    result = data.map.with_index do |el, i|
+    data.each.with_index do |el, i|
       @driver.navigate.to el[1].url
       wait = Selenium::WebDriver::Wait.new(:timeout => 30)
       sleep(2)
-      apply_btn = @driver.find_elements(css: '.js-apply-button')[0]
-      apply_btn.click()
-      wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-      phone = @driver.find_element(id: 'apply-form-phone-input')
-      phone.send_keys number
-      upload = @driver.find_element(id: 'file-browse-input')
-      upload.send_keys resume
-      @driver.find_elements(css: '.jobs-apply-form__follow-company-label')[0].click()
-      wait = Selenium::WebDriver::Wait.new(:timeout => 30)
-      @application = Application.find(el[0].id)
-      @application.update({status: "sent"})
-      el[0] = @application
-      el
+      begin
+        @driver.find_element(css: '.js-apply-button').click()
+        wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+        @driver.find_element(id: 'apply-form-phone-input').send_keys phone
+        upload = @driver.find_element(id: 'file-browse-input')
+        resume = Rails.root.join(open(resume))
+        upload.send_keys resume.realpath.to_s
+        @driver.find_elements(css: '.jobs-apply-form__follow-company-label')[0].click()
+        wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+        @application = Application.find(el[0].id)
+        @application.update({status: "sent"})
+      rescue
+        apply_btn = @driver.find_element(css: '.jobs-s-apply__button')
+        Job.find(el[0].job_id).destroy
+        # @driver.navigate.to @driver.current_url.split('/')[0...3].concat(["job-apply"]).concat([@driver.current_url.split('/')[-1]]).join('/')
+        # wait = Selenium::WebDriver::Wait.new(:timeout => 30)
+        # sleep(2)
+        # @driver.find_elements(css: '.phone-num-input > input')[1].send_keys phone
+        # upload = @driver.find_element(css: '.upload-btn')
+        # upload.send_keys resume
+        # questions = @driver.find_elements(css: '.question-wrapper')
+        # questions.each do |q|
+        #   q.find_elements(css: 'input')[0].click()
+        # end
+        # @driver.action.key_down(:command).send_keys('1').key_up(:command).perform
+      end
     end
-    return result
   end
 end
 
@@ -353,4 +365,56 @@ def linkedin_login(username, password, driver)
   status = (driver.current_url[0, 29] == 'https://www.linkedin.com/feed')
 
   return [driver.save_screenshot('screenshot.png'), driver, status]
+end
+def parser(corpus)
+  stopwords = ['the','of','and','to','a','in','for','is','on','that','by','this','with','i','you','it','not','or','be','are','from','at','as','your','all','have','new','more','an','was','we','will','home','can','us','about','if','page','my','has','search','free','but','our','one','other','do','no','information','time','they','site','he','up','may','what','which','their','news','out','use','any','there','see','only','so','his','when','contact','here','business','who','web','also','now','help','get','pm','view','online','c','e','first','am','been','would','how','were','me','s','services','some','these','click','its','like','service','x','than','find','price','date','back','top','people','had','list','name','just','over','state','year','day','into','email','two','health','n','world','re','next','used','go','b','work','last','most','products','music','buy','data','make','them','should','product','system','post','her','city','t','add','policy','number','such','please','available','copyright','support','message','after','best','software','then','jan','good','video','well','d','where','info','rights','public','books','high','school','through','m','each','links','she','review','years','order','very','privacy','book','items','company','r','read','group','need','many','user','said','de','does','set','under','general','research','university','january','mail','full','map','reviews','program','life','know','games','way','days','management','p','part','could','great','united','hotel','real','f','item','international','center','ebay','must','store','travel','comments','made','development','report','off','member','details','line','terms','before','hotels','did','send','right','type','because','local','those','using','results','office','education','national','car','design','take','posted','internet','address','community','within','states','area','want','phone','dvd','shipping','reserved','subject','between','forum','family','l','long','based','w','code','show','o','even','black','check','special','prices','website','index','being','women','much','sign','file','link','open','today','technology','south','case','project','same','pages','uk','version','section','own','found','sports','house','related','security','both','g','county','american','photo','game','members','power','while','care','network','down','computer','systems','three','total','place','end','following','download','h','him','without','per','access','think','north','resources','current','posts','big','media','law','control','water','history','pictures','size','art','personal','since','including','guide','shop','directory','board','location','change','white','text','small','rating','rate','government','children','during','usa','return','students','v','shopping','account','times','sites','level','digital','profile','previous','form','events','love','old','john','main','call','hours','image','department','title','description','non','k','y','insurance','another','why','shall','property','class','cd','still','money','quality','every','listing','content','country','private','little','visit','save','tools','job','work','few','look','u','work','experience','working','employment','skills','team','poster','premium','strong']
+  data = []
+  count = 0
+  word_frequency = Hash.new(0)
+
+  corpus.each_with_index do |text, i|
+    count += 1
+    text = text.split(' ').map!{|x| x.gsub(/(\W|\d)/, '')}
+    stopwords.each_with_index do |word, i|
+      text = text.reject{|s| s == word}
+    end
+
+    text.uniq.each do |word|
+      word_frequency[word] += 1
+    end
+    data << text
+  end
+
+  word_frequency.each do |k, v|
+    if v > (0.4 * count)
+      data.map!.with_index do |x, idx|
+        x.reject{|w| w == k}
+      end
+    end
+  end
+
+  return data
+end
+
+def lda(text)
+  corpus = Lda::Corpus.new
+
+  text.each do |description|
+    corpus.add_document(Lda::TextDocument.new(corpus, description.join(' ')))
+  end
+
+  lda = Lda::Lda.new(corpus)
+  lda.verbose = false
+  lda.num_topics = 5
+  lda.max_iter = 100
+  lda.init_alpha = 0.8
+  lda.em('random')
+  topics = lda.top_words(10)
+  matrix = lda.compute_topic_document_probability
+  topics.each do |topic|
+    puts '****'
+    puts topic
+  end
+
+  return matrix
 end

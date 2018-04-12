@@ -106,6 +106,7 @@ class ScrapeJobs extends React.Component {
           liAuth={this.props.liAuth}
           submit={this.scrape}
           status={this.props.status}
+          url={this.props.url}
         />
         {result}
       </div>

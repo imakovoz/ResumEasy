@@ -28,16 +28,22 @@ class Api::JobsController < ApplicationController
   def li_login
     if params[:status] == 'false'
       $driver = LinkedinAuth.new
-      screenshot, status = $driver.signin(params[:username], params[:password])
-      # screenshot, driver, status = linkedin_login(params[:username], params[:password], params[:driver])
-      # screenshot = File.open(screenshot)
-      # User.find(current_user.id).update({screenshot: screenshot})
-      render json: {status: status}
+      status = $driver.signin(params[:username], params[:password])
+      screenshot = File.open($driver.driver.save_screenshot('screenshot.png'))
+      User.find(current_user.id).update({screenshot: screenshot})
+      url = current_user.screenshot.url.to_s
+      render json: {status: 'captcha', url: url}
     elsif params[:status] == 'email'
       $driver.email(params[:code])
       status = 'false'
-      status = 'true' if $driver.info.current_url != 'https://www.linkedin.com/uas/ato-pin-challenge-submit'
-      render json: {url: $driver.info.current_url, status: status}
+      status = 'true' if $driver.driver.current_url != 'https://www.linkedin.com/uas/ato-pin-challenge-submit'
+      render json: {status: status}
+    elsif params[:status] == 'captcha'
+      position = [params[:clickx].to_i, params[:clicky].to_i]
+      $driver.captcha(position)
+      status = 'captcha'
+      status = 'true' if $driver.driver.current_url[0, 45] != 'https://www.linkedin.com/uas/consumer-captcha'
+      render json: {status: status}
     elsif $driver
       render json: {status: 'true'}
     end
@@ -92,7 +98,7 @@ class Api::JobsController < ApplicationController
 end
 
 class LinkedinAuth
-  attr_accessor :driver
+  attr_reader :driver
 
   def initialize
     options = Selenium::WebDriver::Chrome::Options.new
@@ -118,15 +124,13 @@ class LinkedinAuth
       status = 'true'
     elsif @driver.current_url == 'https://www.linkedin.com/uas/consumer-email-challenge'
       status = 'email'
+    elsif @driver.current_url[0, 45] == 'https://www.linkedin.com/uas/consumer-captcha'
+      status = 'captcha'
     else
       status = 'false'
     end
 
-    return [@driver.save_screenshot('screenshot.png'), status]
-  end
-
-  def info
-    return @driver.current_url
+    return status
   end
 
   def email(code)
@@ -135,6 +139,15 @@ class LinkedinAuth
 
     element = @driver.find_element(id: 'btn-primary')
     element.click
+  end
+
+  def captcha(position)
+    body = @driver.find_element(css: 'body')
+    height = body.size.to_s.split(' ')[-1].split('=')[-1][0...-1].to_i
+    width = body.size.to_s.split(' ')[-2].split('=')[-1][0...-1].to_i
+    @driver.action.move_to(body, (-0.5 * width + position[0]), (-0.5 * height + position[1])).perform
+    @driver.action.click.perform
+    
   end
 
   def scrape(data)

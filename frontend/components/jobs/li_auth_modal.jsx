@@ -13,7 +13,8 @@ class Modal extends React.Component {
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleAuth = this.handleAuth.bind(this);
-    this.handleEmailVerification = this.handleEmailVerification.bind(this);
+    this.captcha = this.captcha.bind(this);
+    this.handleEmail = this.handleEmail.bind(this);
   }
 
   handleInput(e) {
@@ -44,7 +45,7 @@ class Modal extends React.Component {
     });
   }
 
-  handleEmailVerification() {
+  handleEmail() {
     this.props
       .liAuth({
         code: this.state.code,
@@ -54,7 +55,21 @@ class Modal extends React.Component {
         if (result.data.status === 'false') {
           this.handleAuth();
         } else if (result.data.status === 'true') {
-          this.scrape();
+          this.props.submit();
+        }
+      });
+  }
+
+  captcha(e) {
+    this.props
+      .liAuth({
+        clickx: e.nativeEvent.offsetX,
+        clicky: e.nativeEvent.offsetY,
+        status: this.props.status,
+      })
+      .then(result => {
+        if (result.data.status === 'true') {
+          this.props.submit();
         }
       });
   }
@@ -69,7 +84,7 @@ class Modal extends React.Component {
         return (
           <div className="modal-backdrop">
             <div className="modal">
-              <div class="loader">Loading...</div>
+              <div className="loader">Loading...</div>
             </div>
           </div>
         );
@@ -108,6 +123,15 @@ class Modal extends React.Component {
               />
               <a onClick={this.handleEmail}>Submit</a>
             </form>
+          </div>
+        </div>
+      );
+    } else if (this.props.status === 'captcha') {
+      debugger;
+      return (
+        <div className="modal-backdrop">
+          <div className="modal">
+            <img src={this.props.url} onClick={this.captcha} />
           </div>
         </div>
       );

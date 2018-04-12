@@ -7,6 +7,7 @@ const mapStateToProps = (state, ownProps) => {
     jobs: _.values(state.entities.jobs) || [],
     screenshot: state.entities.auth.screenshot || null,
     status: state.entities.auth.status || 'false',
+    url: state.entities.auth.url || 'false',
     driver: state.entities.auth.driver || '0',
     currentUser: state.session.currentUser.id,
   };

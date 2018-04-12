@@ -5,7 +5,7 @@ const authReducer = (state = {}, action) => {
   Object.freeze(state);
   switch (action.type) {
     case CHECK_AUTH:
-      return action.data;
+      return merge({}, state, action.data);
     default:
       return state;
   }

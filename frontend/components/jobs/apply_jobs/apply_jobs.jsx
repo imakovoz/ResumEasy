@@ -126,6 +126,7 @@ class ApplyJobs extends React.Component {
           liAuth={this.props.liAuth}
           submit={this.handleSubmit.bind(this)}
           status={this.props.status}
+          url={this.props.url}
         />
         <div id="apply-btn-container">
           <div id="sort-btn" onClick={this.handleSort.bind(this)}>

@@ -35,7 +35,7 @@ class Api::JobsController < ApplicationController
         screenshot.close
       end
       puts status
-      render json: {status: status}
+      render json: {status: 'true'}
     elsif params[:status] == 'email'
       $driver.email(params[:code])
       status = 'false'

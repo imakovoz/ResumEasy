@@ -327,6 +327,8 @@ class LinkedinAuth
         resume = Rails.root.join(open(resume))
         upload.send_keys resume.realpath.to_s
         @driver.find_elements(css: '.jobs-apply-form__follow-company-label')[0].click()
+        sleep(1)
+        @driver.find_elements(css: '.jobs-apply-form__submit-button')[0].click()
         wait = Selenium::WebDriver::Wait.new(:timeout => 30)
         @application = Application.find(el[0].id)
         @application.update({status: "sent"})

@@ -28,12 +28,13 @@ class Api::JobsController < ApplicationController
   def li_login
     if params[:status] == 'false'
       $driver = LinkedinAuth.new
-      status = $driver.signin(params[:username], params[:password])
+      status = $driver.signin(params[:username], params[:password]).to_s
       if status == 'captcha'
         screenshot = File.open($driver.driver.save_screenshot('screenshot.png'))
         User.find(current_user.id).update({screenshot: screenshot})
         screenshot.close
       end
+      puts status
       render json: {status: status}
     elsif params[:status] == 'email'
       $driver.email(params[:code])

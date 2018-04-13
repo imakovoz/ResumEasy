@@ -68,7 +68,7 @@ class ScrapeJobs extends React.Component {
             className="location"
             placeholder="Location"
           />
-          <a onClick={this.handleSearch}>Search</a>
+          <button>Search</button>
         </form>
       </section>
     );

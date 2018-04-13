@@ -28,7 +28,7 @@ class Api::JobsController < ApplicationController
   def li_login
     if params[:status] == 'false'
       $driver = LinkedinAuth.new
-      status = $driver.signin(params[:username], params[:password]).to_s
+      status = $driver.signin(params[:username], params[:password])
       if status == 'captcha'
         screenshot = File.open($driver.driver.save_screenshot('screenshot.png'))
         User.find(current_user.id).update({screenshot: screenshot})

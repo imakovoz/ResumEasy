@@ -126,3 +126,9 @@ table {
 a {
   text-decoration: none;
 }
+
+button {
+  background-color: #00a178;
+  color: white;
+  box-sizing: content-box;
+}

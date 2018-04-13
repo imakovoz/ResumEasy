@@ -96,7 +96,8 @@ class Modal extends React.Component {
       return (
         <div className="modal-backdrop">
           <div className="modal">
-            <form id="li_auth_modal_form">
+            <h3 id="modal-header">Please enter your LinkedIn login details</h3>
+            <form id="li_auth_modal_form" onSubmit={this.handleAuth}>
               <input
                 type="text"
                 onChange={this.handleInput}
@@ -109,7 +110,7 @@ class Modal extends React.Component {
                 id="password"
                 placeholder="Password"
               />
-              <a onClick={this.handleAuth}>Submit</a>
+              <button>Submit</button>
             </form>
           </div>
         </div>
